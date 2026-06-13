@@ -4,132 +4,100 @@
 
 <div class="dashboard-page">
     <section class="hero-banner">
-        <div>
-            <span class="eyebrow">Rutas seguras para ti</span>
-            <h1>BikeRoutes Safe</h1>
+        <div class="hero-copy">
+            <span class="eyebrow">Avances académicos · BikeRoutes Safe</span>
+            <h1>Dos prácticas, una sola presentación clara.</h1>
+            <p>La página organiza el primer y segundo avance con un diseño más limpio, para que el contenido se lea rápido y se vea mejor en cualquier pantalla.</p>
+            <div class="hero-badges">
+                <span class="hero-badge">1era práctica: 4 sem</span>
+                <span class="hero-badge">2da práctica: 8 sem</span>
+                <span class="hero-badge">Diseño responsive</span>
+            </div>
         </div>
-        <div class="hero-search">
-            <input type="search" class="form-control search-input" placeholder="Buscar rutas..." />
-            <button class="btn btn-primary search-btn">Buscar</button>
+        <div class="hero-panel">
+            <div class="hero-panel-label">Resumen rápido</div>
+            <div class="hero-panel-title">Entregas visibles y bien separadas</div>
+            <div class="hero-panel-copy">Se prioriza una lectura simple del avance, con bloques que agrupan los temas por práctica y por funcionalidad.</div>
+            <div class="hero-search">
+                <input type="search" class="form-control search-input" placeholder="Buscar rutas o avances..." />
+                <button class="btn btn-primary search-btn">Buscar</button>
+            </div>
         </div>
     </section>
 
-    <section class="dashboard-grid">
-        <article class="dashboard-card profile-card">
-            <div class="card-header">
-                <span>Perfil</span>
-                <span class="badge bg-success">Activo</span>
+    <section class="practice-section" id="avance-uno">
+        <div class="section-headline">
+            <div>
+                <span class="section-kicker">Primer avance</span>
+                <h2>Web + HTTP + Git + Formularios</h2>
             </div>
-            <div class="profile-summary">
-                <div class="profile-avatar">U</div>
-                <div>
-                    <h2>Usuario Ciclista</h2>
-                    <p>Miembro desde Marzo 2026</p>
-                </div>
-            </div>
-            <ul class="profile-links">
-                <li>Mis rutas guardadas</li>
-                <li>Historial de reportes</li>
-                <li>Configuración</li>
-                <li>Ayuda y soporte</li>
-            </ul>
-        </article>
+            <p>Base del proyecto enfocada en la estructura visual, el flujo de peticiones y el envío de datos.</p>
+        </div>
+        <div class="practice-grid">
+            <article class="practice-card">
+                <h3>Web</h3>
+                <p>Se construye una interfaz clara, con jerarquía visual y soporte responsive.</p>
+                <span class="card-pill">UI</span>
+            </article>
+            <article class="practice-card">
+                <h3>HTTP</h3>
+                <p>Se reconocen peticiones y respuestas como base del comportamiento web.</p>
+                <span class="card-pill">Requests</span>
+            </article>
+            <article class="practice-card">
+                <h3>Git</h3>
+                <p>Se registra el avance con commits y ramas para mantener trazabilidad.</p>
+                <span class="card-pill">Versionado</span>
+            </article>
+            <article class="practice-card">
+                <h3>Formularios</h3>
+                <p>Se habilita la captura de datos con un flujo simple para el usuario.</p>
+                <span class="card-pill">Input</span>
+            </article>
+        </div>
+    </section>
 
-        <article class="dashboard-card map-card">
-            <div class="card-header">
-                <span>Mapa</span>
-                <span class="badge bg-info">En vivo</span>
+    <section class="practice-section practice-section-alt" id="avance-dos">
+        <div class="section-headline">
+            <div>
+                <span class="section-kicker">Segundo avance</span>
+                <h2>Base de Datos, métodos HTTP y estado de la aplicación</h2>
             </div>
-            <div class="stat-row">
-                <div>
-                    <strong>88%</strong>
-                    <span>Seguridad</span>
+            <p>El segundo bloque resume los conceptos que normalmente se integran al pasar de una demo visual a una aplicación web con persistencia y sesión.</p>
+        </div>
+        <div class="practice-grid practice-grid-two-columns">
+            <article class="practice-card practice-card-soft">
+                <h3>Persistencia</h3>
+                <p>Base de Datos y Redis para guardar y recuperar información de forma ordenada y rápida.</p>
+                <div class="tag-row">
+                    <span class="card-pill">Base de Datos</span>
+                    <span class="card-pill">Redis</span>
                 </div>
-                <div>
-                    <strong>4</strong>
-                    <span>Rutas</span>
+            </article>
+            <article class="practice-card practice-card-soft">
+                <h3>Interacción web</h3>
+                <p>Métodos HTTP y aplicaciones web para entender cómo se comunican las vistas con el servidor.</p>
+                <div class="tag-row">
+                    <span class="card-pill">GET / POST / PUT / DELETE</span>
+                    <span class="card-pill">Aplicaciones web</span>
                 </div>
-                <div>
-                    <strong>3</strong>
-                    <span>Reportes</span>
+            </article>
+            <article class="practice-card practice-card-soft">
+                <h3>Estado de usuario</h3>
+                <p>Sesiones y cookies para conservar datos entre peticiones sin perder contexto.</p>
+                <div class="tag-row">
+                    <span class="card-pill">Sesiones</span>
+                    <span class="card-pill">Cookies</span>
                 </div>
-            </div>
-            <div class="map-placeholder">Mapa de rutas</div>
-            <div class="map-legend">
-                <div><span class="legend-dot safe"></span>Ruta segura</div>
-                <div><span class="legend-dot caution"></span>Precaución</div>
-                <div><span class="legend-dot danger"></span>Peligrosa</div>
-            </div>
-        </article>
-
-        <article class="dashboard-card routes-card">
-            <div class="card-header">
-                <span>Rutas</span>
-                <span class="badge bg-primary">4 activas</span>
-            </div>
-            <div class="route-search">
-                <input type="search" class="form-control" placeholder="Buscar rutas..." />
-            </div>
-            <div class="route-card">
-                <div class="route-card-title">
-                    <h3>Ciclovia Universitaria</h3>
-                    <span class="badge bg-success">Fácil</span>
+            </article>
+            <article class="practice-card practice-card-soft">
+                <h3>Mensajes entre vistas</h3>
+                <p>TempData y ViewData para compartir información temporal durante la navegación.</p>
+                <div class="tag-row">
+                    <span class="card-pill">TempData</span>
+                    <span class="card-pill">ViewData</span>
                 </div>
-                <p>Ruta dedicada para ciclistas con excelente iluminación.</p>
-                <div class="route-meta">
-                    <span>3.2 km</span>
-                    <span>15 min</span>
-                    <span>95%</span>
-                </div>
-                <a href="#">Ver más</a>
-            </div>
-            <div class="route-card">
-                <div class="route-card-title">
-                    <h3>Ruta Campus Sur</h3>
-                    <span class="badge bg-success">Fácil</span>
-                </div>
-                <p>Conecta los principales edificios del campus con pasos seguros.</p>
-                <div class="route-meta">
-                    <span>2.1 km</span>
-                    <span>10 min</span>
-                    <span>92%</span>
-                </div>
-            </div>
-        </article>
-
-        <article class="dashboard-card stats-card">
-            <div class="card-header">
-                <span>Tus estadísticas</span>
-                <span class="badge bg-secondary">Este mes</span>
-            </div>
-            <div class="stats-hero">
-                <div>
-                    <span class="stats-value">127.3 km</span>
-                    <p>Distancia total</p>
-                </div>
-            </div>
-            <div class="stats-grid">
-                <div>
-                    <strong>18</strong>
-                    <span>Rutas completadas</span>
-                </div>
-                <div>
-                    <strong>12 h</strong>
-                    <span>Tiempo total</span>
-                </div>
-                <div>
-                    <strong>3</strong>
-                    <span>Reportes enviados</span>
-                </div>
-                <div>
-                    <strong>88%</strong>
-                    <span>Seguridad avg.</span>
-                </div>
-            </div>
-            <div class="favorite-route">
-                <h4>Rutas favoritas</h4>
-                <p>Ciclovia Universitaria <span class="text-success">95%</span></p>
-            </div>
-        </article>
+            </article>
+        </div>
     </section>
 </div>
