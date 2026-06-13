@@ -22,15 +22,18 @@ public class MercadoPagoMembershipService : IMercadoPagoMembershipService
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
     private readonly ApplicationDbContext _dbContext;
+    private readonly ILogger<MercadoPagoMembershipService> _logger;
 
     public MercadoPagoMembershipService(
         IHttpClientFactory httpClientFactory,
         IConfiguration configuration,
-        ApplicationDbContext dbContext)
+        ApplicationDbContext dbContext,
+        ILogger<MercadoPagoMembershipService> logger)
     {
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public MercadoPagoOptions GetOptions()
@@ -83,11 +86,13 @@ public class MercadoPagoMembershipService : IMercadoPagoMembershipService
             }
         };
 
-        var json = JsonSerializer.Serialize(payload, new JsonSerializerOptions
+        var jsonOptions = new JsonSerializerOptions
         {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        });
+        };
+
+        var json = JsonSerializer.Serialize(payload, jsonOptions);
+        _logger.LogInformation("MercadoPago payload: {Payload}", json);
 
         var response = await client.PostAsync(
             "https://api.mercadopago.com/checkout/preferences",
@@ -95,13 +100,15 @@ public class MercadoPagoMembershipService : IMercadoPagoMembershipService
             cancellationToken);
 
         var responseJson = await response.Content.ReadAsStringAsync(cancellationToken);
+        _logger.LogInformation("MercadoPago response ({Status}): {Response}", response.StatusCode, responseJson);
+
         if (!response.IsSuccessStatusCode)
         {
             return new MembershipCheckoutResult
             {
                 Success = false,
-                Message = $"Mercado Pago respondió con error: {response.StatusCode}",
-                PreferenceId = responseJson
+                Message = $"Mercado Pago respondió con error: {response.StatusCode} - {responseJson}",
+                PreferenceId = null
             };
         }
 
