@@ -1,0 +1,80 @@
+@{
+    ViewData["Title"] = "Chatbot";
+}
+
+<section class="chat-shell">
+    <div class="chat-hero">
+        <span class="eyebrow">Agent IA · Chatbot</span>
+        <h1>Chat de recomendaciones</h1>
+        <p class="lead-copy">Selecciona una pregunta rápida para recibir una respuesta instantánea y ver por qué el chatbot puede fallar.</p>
+    </div>
+
+    <div class="chat-card">
+        <div class="chat-panel chat-panel-left">
+            <div class="panel-label">Preguntas rápidas</div>
+            <div class="quick-grid">
+                <button type="button" class="btn btn-quick quick-q" data-key="route">¿Es segura la ruta desde Origen al Destino?</button>
+                <button type="button" class="btn btn-quick quick-q" data-key="family">¿Recomiendas una ruta familiar por la tarde?</button>
+                <button type="button" class="btn btn-quick quick-q" data-key="night">¿Debería evitar viajar de noche?</button>
+                <button type="button" class="btn btn-quick quick-q" data-key="tips">¿Cómo aumentar la seguridad de mi trayecto?</button>
+                <button type="button" class="btn btn-quick quick-q" data-key="work">¿Ruta corta y segura para ir al trabajo?</button>
+            </div>
+        </div>
+
+        <div class="chat-panel chat-panel-right">
+            <div class="panel-label">Conversación</div>
+            <div id="chatMessages" class="chat-messages"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function () {
+        const messages = document.getElementById('chatMessages');
+        const append = (who, html, type) => {
+            const el = document.createElement('div');
+            el.className = `chat-message ${type || 'neutral'}`;
+            el.innerHTML = `<span class="chat-who">${who}</span><span class="chat-text">${html}</span>`;
+            messages.appendChild(el);
+            messages.scrollTop = messages.scrollHeight;
+        };
+
+        const answers = {
+            route: {
+                answer: 'Probabilidad estimada ~78%. Recomendación: ruta recomendada por el agente, prioriza ciclovías y evita tramos de alto tráfico.',
+                reasoning: 'Razonamiento: la ruta favorece buena iluminación y distancia moderada, lo que reduce el riesgo.'
+            },
+            family: {
+                answer: 'Sí, la ruta familiar es recomendada (seguridad alta, ~85%). Elige calles locales con semáforos y tramos peatonales tranquilos.',
+                reasoning: 'Razonamiento: este perfil reduce velocidad y prioriza recorridos con menos intersecciones.'
+            },
+            night: {
+                answer: 'No es ideal viajar de noche. Si lo haces, prioriza vías bien iluminadas y ciclovías, y acorta la distancia.',
+                reasoning: 'Razonamiento: la baja visibilidad aumenta la probabilidad de incidentes; la iluminación mejora detección y seguridad.'
+            },
+            tips: {
+                answer: 'Consejos: usa ciclovías, evita horas pico, elige rutas bien iluminadas, reduce distancia y usa equipo reflectante.',
+                reasoning: 'Razonamiento: estos factores mejoran el score de seguridad del agente.'
+            },
+            work: {
+                answer: 'Ruta corta y segura: prioriza tramos con infraestructura ciclista y reduce cruces complejos (estimado ~72%).',
+                reasoning: 'Razonamiento: rutas cortas reducen exposición; ciclovías mejoran continuidad y seguridad.'
+            }
+        };
+
+        document.querySelectorAll('.quick-q').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const key = this.dataset.key;
+                const qtext = this.textContent || this.innerText;
+                append('Tú', qtext, 'user');
+                const a = answers[key];
+                if (a) {
+                    append('Bot', `${a.answer}<div class="chat-reason">${a.reasoning}</div>`, 'bot');
+                } else {
+                    append('Bot', 'Lo siento, no tengo una respuesta preparada para esa pregunta.', 'bot');
+                }
+                append('Bot (diagnóstico)', 'Esta respuesta es local. Si antes no recibías respuesta al escribir, puede deberse a API inalcanzable, pregunta demasiado abierta o datos faltantes como origen/destino.', 'diagnostic');
+            });
+        });
+    })();
+</script>

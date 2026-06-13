@@ -77,6 +77,13 @@ public class HomeController : Controller
         });
     }
 
+    [HttpGet]
+    public IActionResult Chat()
+    {
+        ViewData["Title"] = "Chatbot";
+        return View();
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Ml(MlAnalysisViewModel model)
