@@ -1,26 +1,44 @@
-﻿@{
+﻿@model mathiasBike.Models.HomeAdvanceViewModel
+@{
     ViewData["Title"] = "BikeRoutes Safe";
+}
+
+@if (TempData["AdvanceMessage"] is string advanceMessage)
+{
+    <div class="alert alert-success advance-alert" role="alert">
+        @advanceMessage
+    </div>
 }
 
 <div class="dashboard-page">
     <section class="hero-banner">
         <div class="hero-copy">
             <span class="eyebrow">Avances académicos · BikeRoutes Safe</span>
-            <h1>Dos prácticas, una sola presentación clara.</h1>
-            <p>La página organiza el primer y segundo avance con un diseño más limpio, para que el contenido se lea rápido y se vea mejor en cualquier pantalla.</p>
+            <h1>Un tablero visual para tus prácticas.</h1>
+            <p>Los conceptos se muestran con tarjetas e indicadores visuales, y debajo tienes un formulario real para enviar tu avance.</p>
             <div class="hero-badges">
-                <span class="hero-badge">1era práctica: 4 sem</span>
-                <span class="hero-badge">2da práctica: 8 sem</span>
+                <span class="hero-badge">Tarjetas visuales</span>
+                <span class="hero-badge">Formulario activo</span>
                 <span class="hero-badge">Diseño responsive</span>
             </div>
         </div>
         <div class="hero-panel">
             <div class="hero-panel-label">Resumen rápido</div>
-            <div class="hero-panel-title">Entregas visibles y bien separadas</div>
-            <div class="hero-panel-copy">Se prioriza una lectura simple del avance, con bloques que agrupan los temas por práctica y por funcionalidad.</div>
-            <div class="hero-search">
-                <input type="search" class="form-control search-input" placeholder="Buscar rutas o avances..." />
-                <button class="btn btn-primary search-btn">Buscar</button>
+            <div class="hero-panel-title">Dos bloques, ocho conceptos y un formulario de entrega</div>
+            <div class="hero-panel-copy">La página está pensada como una mini presentación visual para mostrar el avance del proyecto sin depender de texto plano.</div>
+            <div class="hero-metrics">
+                <div>
+                    <strong>4</strong>
+                    <span>Temas del primer avance</span>
+                </div>
+                <div>
+                    <strong>4</strong>
+                    <span>Temas del segundo avance</span>
+                </div>
+                <div>
+                    <strong>1</strong>
+                    <span>Formulario de envío</span>
+                </div>
             </div>
         </div>
     </section>
@@ -29,29 +47,33 @@
         <div class="section-headline">
             <div>
                 <span class="section-kicker">Primer avance</span>
-                <h2>Web + HTTP + Git + Formularios</h2>
+                <h2>Primer avance visual</h2>
             </div>
-            <p>Base del proyecto enfocada en la estructura visual, el flujo de peticiones y el envío de datos.</p>
+            <p>La primera práctica se resume en cuatro bloques visuales que muestran el enfoque del proyecto.</p>
         </div>
-        <div class="practice-grid">
-            <article class="practice-card">
+        <div class="practice-grid visual-grid">
+            <article class="practice-card theme-card">
+                <div class="theme-icon web">W</div>
                 <h3>Web</h3>
-                <p>Se construye una interfaz clara, con jerarquía visual y soporte responsive.</p>
-                <span class="card-pill">UI</span>
+                <p>Interfaz responsive con jerarquía visual y composición limpia.</p>
+                <span class="card-pill">UI / UX</span>
             </article>
-            <article class="practice-card">
+            <article class="practice-card theme-card">
+                <div class="theme-icon http">H</div>
                 <h3>HTTP</h3>
-                <p>Se reconocen peticiones y respuestas como base del comportamiento web.</p>
+                <p>Peticiones y respuestas mostradas como flujo de comunicación.</p>
                 <span class="card-pill">Requests</span>
             </article>
-            <article class="practice-card">
+            <article class="practice-card theme-card">
+                <div class="theme-icon git">G</div>
                 <h3>Git</h3>
-                <p>Se registra el avance con commits y ramas para mantener trazabilidad.</p>
+                <p>Control de versiones con commits y ramas para registrar el avance.</p>
                 <span class="card-pill">Versionado</span>
             </article>
-            <article class="practice-card">
+            <article class="practice-card theme-card">
+                <div class="theme-icon form">F</div>
                 <h3>Formularios</h3>
-                <p>Se habilita la captura de datos con un flujo simple para el usuario.</p>
+                <p>Entrada de datos pensada para capturar información de usuario.</p>
                 <span class="card-pill">Input</span>
             </article>
         </div>
@@ -61,38 +83,44 @@
         <div class="section-headline">
             <div>
                 <span class="section-kicker">Segundo avance</span>
-                <h2>Base de Datos, métodos HTTP y estado de la aplicación</h2>
+                <h2>Segundo avance visual</h2>
             </div>
-            <p>El segundo bloque resume los conceptos que normalmente se integran al pasar de una demo visual a una aplicación web con persistencia y sesión.</p>
+            <p>El segundo bloque agrupa persistencia, métodos HTTP y estado de aplicación en tarjetas separadas.</p>
         </div>
-        <div class="practice-grid practice-grid-two-columns">
-            <article class="practice-card practice-card-soft">
-                <h3>Persistencia</h3>
-                <p>Base de Datos y Redis para guardar y recuperar información de forma ordenada y rápida.</p>
+        <div class="practice-grid practice-grid-two-columns visual-grid">
+            <article class="practice-card practice-card-soft theme-card">
+                <div class="theme-icon data">D</div>
+                <h3>Base de datos + Redis</h3>
+                <p>Persistencia y caché para guardar y recuperar información rápidamente.</p>
                 <div class="tag-row">
                     <span class="card-pill">Base de Datos</span>
                     <span class="card-pill">Redis</span>
                 </div>
             </article>
-            <article class="practice-card practice-card-soft">
-                <h3>Interacción web</h3>
-                <p>Métodos HTTP y aplicaciones web para entender cómo se comunican las vistas con el servidor.</p>
+            <article class="practice-card practice-card-soft theme-card">
+                <div class="theme-icon http">M</div>
+                <h3>Métodos HTTP</h3>
+                <p>GET, POST, PUT y DELETE como acciones visibles dentro de la aplicación web.</p>
                 <div class="tag-row">
-                    <span class="card-pill">GET / POST / PUT / DELETE</span>
-                    <span class="card-pill">Aplicaciones web</span>
+                    <span class="card-pill">GET</span>
+                    <span class="card-pill">POST</span>
+                    <span class="card-pill">PUT</span>
+                    <span class="card-pill">DELETE</span>
                 </div>
             </article>
-            <article class="practice-card practice-card-soft">
-                <h3>Estado de usuario</h3>
-                <p>Sesiones y cookies para conservar datos entre peticiones sin perder contexto.</p>
+            <article class="practice-card practice-card-soft theme-card">
+                <div class="theme-icon session">S</div>
+                <h3>Sesiones + cookies</h3>
+                <p>Estado del usuario conservado entre peticiones sin perder el contexto.</p>
                 <div class="tag-row">
                     <span class="card-pill">Sesiones</span>
                     <span class="card-pill">Cookies</span>
                 </div>
             </article>
-            <article class="practice-card practice-card-soft">
-                <h3>Mensajes entre vistas</h3>
-                <p>TempData y ViewData para compartir información temporal durante la navegación.</p>
+            <article class="practice-card practice-card-soft theme-card">
+                <div class="theme-icon temp">T</div>
+                <h3>TempData + ViewData</h3>
+                <p>Mensajes temporales y datos de vista para comunicar pantallas entre sí.</p>
                 <div class="tag-row">
                     <span class="card-pill">TempData</span>
                     <span class="card-pill">ViewData</span>
@@ -100,4 +128,77 @@
             </article>
         </div>
     </section>
+
+    <section class="practice-section form-section" id="avance-formulario">
+        <div class="section-headline">
+            <div>
+                <span class="section-kicker">Formulario</span>
+                <h2>Envía tu avance</h2>
+            </div>
+            <p>Un formulario real para registrar el avance del proyecto y demostrar el envío por HTTP POST.</p>
+        </div>
+
+        <div class="form-shell">
+            <div class="form-aside">
+                <div class="aside-badge">POST</div>
+                <h3>Registro de práctica</h3>
+                <p>Completa los campos y envía el formulario para dejar constancia del avance académico.</p>
+                <ul class="aside-points">
+                    <li>Validación básica en el servidor</li>
+                    <li>Confirmación después de enviar</li>
+                    <li>Diseño alineado con la página</li>
+                </ul>
+            </div>
+
+            <form asp-action="Index" method="post" class="advance-form">
+                @Html.AntiForgeryToken()
+                <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+                <div class="form-grid">
+                    <div class="mb-3">
+                        <label asp-for="Nombre" class="form-label"></label>
+                        <input asp-for="Nombre" class="form-control" placeholder="Tu nombre" />
+                        <span asp-validation-for="Nombre" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="correo@ejemplo.com" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PracticaSeleccionada" class="form-label"></label>
+                        <select asp-for="PracticaSeleccionada" class="form-select">
+                            <option value="">Selecciona una práctica</option>
+                            <option value="Primera práctica">Primera práctica</option>
+                            <option value="Segunda práctica">Segunda práctica</option>
+                        </select>
+                        <span asp-validation-for="PracticaSeleccionada" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="TemaPrincipal" class="form-label"></label>
+                        <input asp-for="TemaPrincipal" class="form-control" placeholder="Tema que quieres mostrar" />
+                        <span asp-validation-for="TemaPrincipal" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Comentario" class="form-label"></label>
+                    <textarea asp-for="Comentario" class="form-control" rows="4" placeholder="Describe tu avance, capturas o notas importantes"></textarea>
+                    <span asp-validation-for="Comentario" class="text-danger"></span>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input asp-for="AceptaTerminos" class="form-check-input" />
+                    <label asp-for="AceptaTerminos" class="form-check-label"></label>
+                    <span asp-validation-for="AceptaTerminos" class="text-danger d-block"></span>
+                </div>
+
+                <button type="submit" class="btn btn-primary submit-btn">Enviar avance</button>
+            </form>
+        </div>
+    </section>
 </div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

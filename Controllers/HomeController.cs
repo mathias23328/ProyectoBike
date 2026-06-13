@@ -13,9 +13,23 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    [HttpGet]
     public IActionResult Index()
     {
-        return View();
+        return View(new HomeAdvanceViewModel());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Index(HomeAdvanceViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+
+        TempData["AdvanceMessage"] = $"Gracias, {model.Nombre}. Recibimos tu avance de {model.PracticaSeleccionada}.";
+        return RedirectToAction(nameof(Index));
     }
 
     public IActionResult Privacy()
