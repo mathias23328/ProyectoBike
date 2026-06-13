@@ -1,8 +1,135 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "BikeRoutes Safe";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="dashboard-page">
+    <section class="hero-banner">
+        <div>
+            <span class="eyebrow">Rutas seguras para ti</span>
+            <h1>BikeRoutes Safe</h1>
+        </div>
+        <div class="hero-search">
+            <input type="search" class="form-control search-input" placeholder="Buscar rutas..." />
+            <button class="btn btn-primary search-btn">Buscar</button>
+        </div>
+    </section>
+
+    <section class="dashboard-grid">
+        <article class="dashboard-card profile-card">
+            <div class="card-header">
+                <span>Perfil</span>
+                <span class="badge bg-success">Activo</span>
+            </div>
+            <div class="profile-summary">
+                <div class="profile-avatar">U</div>
+                <div>
+                    <h2>Usuario Ciclista</h2>
+                    <p>Miembro desde Marzo 2026</p>
+                </div>
+            </div>
+            <ul class="profile-links">
+                <li>Mis rutas guardadas</li>
+                <li>Historial de reportes</li>
+                <li>Configuración</li>
+                <li>Ayuda y soporte</li>
+            </ul>
+        </article>
+
+        <article class="dashboard-card map-card">
+            <div class="card-header">
+                <span>Mapa</span>
+                <span class="badge bg-info">En vivo</span>
+            </div>
+            <div class="stat-row">
+                <div>
+                    <strong>88%</strong>
+                    <span>Seguridad</span>
+                </div>
+                <div>
+                    <strong>4</strong>
+                    <span>Rutas</span>
+                </div>
+                <div>
+                    <strong>3</strong>
+                    <span>Reportes</span>
+                </div>
+            </div>
+            <div class="map-placeholder">Mapa de rutas</div>
+            <div class="map-legend">
+                <div><span class="legend-dot safe"></span>Ruta segura</div>
+                <div><span class="legend-dot caution"></span>Precaución</div>
+                <div><span class="legend-dot danger"></span>Peligrosa</div>
+            </div>
+        </article>
+
+        <article class="dashboard-card routes-card">
+            <div class="card-header">
+                <span>Rutas</span>
+                <span class="badge bg-primary">4 activas</span>
+            </div>
+            <div class="route-search">
+                <input type="search" class="form-control" placeholder="Buscar rutas..." />
+            </div>
+            <div class="route-card">
+                <div class="route-card-title">
+                    <h3>Ciclovia Universitaria</h3>
+                    <span class="badge bg-success">Fácil</span>
+                </div>
+                <p>Ruta dedicada para ciclistas con excelente iluminación.</p>
+                <div class="route-meta">
+                    <span>3.2 km</span>
+                    <span>15 min</span>
+                    <span>95%</span>
+                </div>
+                <a href="#">Ver más</a>
+            </div>
+            <div class="route-card">
+                <div class="route-card-title">
+                    <h3>Ruta Campus Sur</h3>
+                    <span class="badge bg-success">Fácil</span>
+                </div>
+                <p>Conecta los principales edificios del campus con pasos seguros.</p>
+                <div class="route-meta">
+                    <span>2.1 km</span>
+                    <span>10 min</span>
+                    <span>92%</span>
+                </div>
+            </div>
+        </article>
+
+        <article class="dashboard-card stats-card">
+            <div class="card-header">
+                <span>Tus estadísticas</span>
+                <span class="badge bg-secondary">Este mes</span>
+            </div>
+            <div class="stats-hero">
+                <div>
+                    <span class="stats-value">127.3 km</span>
+                    <p>Distancia total</p>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div>
+                    <strong>18</strong>
+                    <span>Rutas completadas</span>
+                </div>
+                <div>
+                    <strong>12 h</strong>
+                    <span>Tiempo total</span>
+                </div>
+                <div>
+                    <strong>3</strong>
+                    <span>Reportes enviados</span>
+                </div>
+                <div>
+                    <strong>88%</strong>
+                    <span>Seguridad avg.</span>
+                </div>
+            </div>
+            <div class="favorite-route">
+                <h4>Rutas favoritas</h4>
+                <p>Ciclovia Universitaria <span class="text-success">95%</span></p>
+            </div>
+        </article>
+    </section>
 </div>
