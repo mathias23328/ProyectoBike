@@ -1,0 +1,33 @@
+# Visual Studio / .NET
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+.vs/
+*.vs/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Rider
+.idea/
+*.sln.iml
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Package output
+*.nupkg
+*.snupkg
+
+# Log files
+*.log
+
+# Node
+node_modules/
+
+# Static web assets caches
+wwwroot/lib/
