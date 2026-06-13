@@ -32,4 +32,10 @@ public class HomeAdvanceViewModel
     [Display(Name = "Acepto que mi avance quede registrado")]
     [Range(typeof(bool), "true", "true", ErrorMessage = "Debes aceptar antes de enviar")]
     public bool AceptaTerminos { get; set; }
+
+    public int VisitCount { get; set; }
+
+    public string SavedPreference { get; set; } = string.Empty;
+
+    public string LastVisit { get; set; } = string.Empty;
 }

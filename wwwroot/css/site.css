@@ -143,6 +143,51 @@ body {
   color: rgba(255, 255, 255, 0.84);
 }
 
+.feature-section {
+  margin-top: 0;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.feature-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.1rem;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 12px 28px rgba(47, 68, 111, 0.06);
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(47, 68, 111, 0.1);
+}
+
+.feature-card h3,
+.feature-card p {
+  margin: 0;
+}
+
+.feature-card h3 {
+  color: #1f2937;
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.feature-card p {
+  color: #56627d;
+  line-height: 1.45;
+  font-size: 0.95rem;
+}
+
 .practice-section {
   padding: 1.6rem;
   border-radius: 1.75rem;
@@ -277,6 +322,77 @@ body {
 .tag-row .card-pill {
   background: #f1f5f9;
   color: #334155;
+}
+
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.state-card {
+  padding: 1rem 1.1rem;
+  border-radius: 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 12px 28px rgba(47, 68, 111, 0.06);
+}
+
+.state-label {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: #3559ff;
+}
+
+.state-card strong {
+  display: block;
+  font-size: 1.2rem;
+  color: #1f2937;
+  margin-bottom: 0.45rem;
+}
+
+.state-card p {
+  margin: 0;
+  color: #53627d;
+  line-height: 1.5;
+}
+
+.state-card span {
+  font-weight: 700;
+}
+
+.state-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: end;
+}
+
+.state-form,
+.state-reset {
+  padding: 1rem;
+  border-radius: 1.25rem;
+  background: #f8faff;
+  border: 1px solid #e2e8f0;
+}
+
+.state-form .form-label {
+  font-weight: 600;
+  color: #334155;
+}
+
+.state-form .form-select {
+  border-radius: 0.95rem;
+}
+
+.state-reset {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .advance-alert {
