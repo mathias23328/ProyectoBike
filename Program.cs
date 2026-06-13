@@ -1,10 +1,14 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using grupomathias.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpClient();
 builder.Services.AddDbContext<grupomathias.Data.ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=grupomathias.db"));
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
@@ -41,6 +45,8 @@ else
 }
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IBikeRouteAgentService, BikeRouteAgentService>();
+    builder.Services.AddScoped<IMercadoPagoMembershipService, MercadoPagoMembershipService>();
 
 var app = builder.Build();
 
@@ -61,6 +67,7 @@ app.UseAuthorization();
 app.UseSession();
 
 app.MapStaticAssets();
+app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
 {

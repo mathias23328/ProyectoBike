@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +12,22 @@ public class ApplicationDbContext : IdentityDbContext
     }
 
     public DbSet<BikeRouteLog> BikeRouteLogs => Set<BikeRouteLog>();
+    public DbSet<UserMembership> UserMemberships => Set<UserMembership>();
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<UserMembership>()
+            .HasOne<IdentityUser>()
+            .WithMany()
+            .HasForeignKey(um => um.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        builder.Entity<UserMembership>()
+            .HasIndex(um => um.PreferenceId)
+            .IsUnique();
+    }
 }
 
 public class BikeRouteLog
@@ -28,4 +45,27 @@ public class BikeRouteLog
     public int SafetyScore { get; set; }
 
     public DateTime CreatedAtUtc { get; set; }
+}
+
+public class UserMembership
+{
+    public int Id { get; set; }
+
+    public string UserId { get; set; } = string.Empty;
+
+    public string PlanName { get; set; } = string.Empty;
+
+    public decimal MonthlyPrice { get; set; }
+
+    public string PreferenceId { get; set; } = string.Empty;
+
+    public string Email { get; set; } = string.Empty;
+
+    public string FullName { get; set; } = string.Empty;
+
+    public string Status { get; set; } = "pending";
+
+    public DateTime CreatedAtUtc { get; set; }
+
+    public DateTime? ExpiresAtUtc { get; set; }
 }

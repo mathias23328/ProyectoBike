@@ -3,3 +3,4 @@ obj/
 grupomathias.db
 grupomathias.db-shm
 grupomathias.db-wal
+appsettings.Local.json

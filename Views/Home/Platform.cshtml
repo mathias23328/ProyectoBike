@@ -106,3 +106,19 @@
         <div class="result-note">@Model.WelcomeMessage</div>
     </article>
 </section>
+
+<section class="insight-grid mt-3">
+    <article class="insight-card">
+        <span class="card-kicker">Membresía</span>
+        <h2>Ingreso premium con Mercado Pago</h2>
+        <p>La app ya tiene una sección dedicada a suscripciones para monetizar funciones del agente ML y las rutas avanzadas.</p>
+        <a class="btn-plan d-inline-block mt-2" asp-controller="Membership" asp-action="Index">Ir a la membresía</a>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">API pública</span>
+        <h2>Estado y checkout por API</h2>
+        <p>Consulta el estado de Mercado Pago o crea una preferencia desde los endpoints REST del proyecto.</p>
+        <div class="result-note">/api/membership/status · /api/membership/checkout</div>
+    </article>
+</section>

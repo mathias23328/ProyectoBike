@@ -1,0 +1,126 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> userManager
+@model grupomathias.Models.MembershipPageViewModel
+
+@{
+    ViewData["Title"] = "Membresía Bike Plus";
+    var currentUser = await userManager.GetUserAsync(User);
+}
+
+<section class="hero-shell platform-shell" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+    <div class="hero-copy">
+        <span class="eyebrow" style="color: rgba(255,255,255,0.8);">💳 Mercado Pago · Membresía Premium</span>
+        <h1 style="color: white; font-size: 2.5rem; font-weight: bold;">Activa Bike Plus</h1>
+        <p class="lead-copy" style="color: rgba(255,255,255,0.9); font-size: 1.1rem;">
+            Desbloquea rutas seguras premium, analítica de agente ML y soporte prioritario.
+        </p>
+
+        @if (TempData["MembershipMessage"] is string message && !string.IsNullOrWhiteSpace(message))
+        {
+            <div class="alert alert-info mt-3" role="alert" style="background: rgba(255,255,255,0.2); border: 1px solid white; color: white;">
+                <strong>✓</strong> @message
+            </div>
+        }
+    </div>
+
+    <div class="card" style="background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.2);">
+        <div class="card-body p-5">
+            <h2 class="card-title" style="color: #333; font-size: 1.8rem; margin-bottom: 1rem;">🚀 Plan Bike Plus</h2>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 style="color: #667eea; font-weight: bold;">✨ Beneficios incluidos:</h5>
+                    <ul style="color: #555; line-height: 2;">
+                        <li>🗺️ Rutas seguras con IA</li>
+                        <li>📊 Historial extendido ilimitado</li>
+                        <li>🤖 Análisis avanzado del agente ML</li>
+                        <li>🔔 Alertas de seguridad en tiempo real</li>
+                        <li>⚡ Soporte prioritario</li>
+                    </ul>
+                </div>
+                <div class="col-md-6 text-center">
+                    <div style="background: #f0f0f0; padding: 2rem; border-radius: 10px;">
+                        <p style="color: #999; font-size: 0.9rem; margin: 0;">Precio mensual</p>
+                        <h3 style="color: #667eea; font-size: 2.5rem; font-weight: bold; margin: 0.5rem 0;">@Model.MonthlyPrice.ToString("0.00")</h3>
+                        <p style="color: #999; font-size: 0.9rem; margin: 0;">@Model.Currency / mes</p>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="CreateCheckout" method="post" class="mt-4">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="PlanName" value="@Model.PlanName" />
+                <input type="hidden" name="MonthlyPrice" value="@Model.MonthlyPrice" />
+
+                @if (currentUser != null)
+                {
+                    <input type="hidden" name="FullName" value="@(currentUser.UserName ?? "Usuario")" />
+                    <input type="hidden" name="Email" value="@currentUser.Email" />
+                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 1.1rem; padding: 12px 40px; border: none; border-radius: 8px; width: 100%; font-weight: bold;">
+                        💳 Pagar con Mercado Pago
+                    </button>
+                }
+                else
+                {
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #333; font-weight: 500;">Nombre completo</label>
+                        <input name="FullName" class="form-control" placeholder="Tu nombre" required style="border-radius: 8px; padding: 10px; border: 1px solid #ddd;" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" style="color: #333; font-weight: 500;">Correo electrónico</label>
+                        <input name="Email" type="email" class="form-control" placeholder="tu@email.com" required style="border-radius: 8px; padding: 10px; border: 1px solid #ddd;" />
+                    </div>
+
+                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 1.1rem; padding: 12px 40px; border: none; border-radius: 8px; width: 100%; font-weight: bold;">
+                        💳 Pagar con Mercado Pago
+                    </button>
+                }
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="mt-5" style="padding: 2rem 0;">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card" style="border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #667eea; font-weight: bold;">🔒 Seguridad</h5>
+                    <p class="card-text" style="color: #666;">Tus datos de pago están protegidos por Mercado Pago con encriptación de nivel bancario.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-4">
+            <div class="card" style="border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                <div class="card-body">
+                    <h5 class="card-title" style="color: #667eea; font-weight: bold;">✅ Sin compromisos</h5>
+                    <p class="card-text" style="color: #666;">Cancela tu membresía en cualquier momento desde tu panel de control.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="insight-grid mt-3">
+    <article class="insight-card">
+        <span class="card-kicker">Incluye</span>
+        <h2>Beneficios de la membresía</h2>
+        <p>Acceso a analíticas del agente IA, rutas seguras premium, historial ampliado y base para futuras suscripciones.</p>
+        <div class="mini-points">
+            <span>Checkout generado en Mercado Pago.</span>
+            <span>Back URLs preparadas para éxito, pendiente y fallo.</span>
+            <span>Endpoint API disponible para integración externa.</span>
+        </div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">API</span>
+        <h2>Consumo programático</h2>
+        <p>
+            También puedes crear la preferencia desde <strong>/api/membership/checkout</strong> y consultar el estado
+            de configuración en <strong>/api/membership/status</strong>.
+        </p>
+        <div class="result-note">Mercado Pago listo para el flujo de membresía.</div>
+    </article>
+</section>

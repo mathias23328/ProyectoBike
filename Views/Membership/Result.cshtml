@@ -1,0 +1,68 @@
+@{
+    ViewData["Title"] = "Resultado membresía";
+    var state = ViewBag.State?.ToString().ToLower() ?? "unknown";
+    var isSuccess = state == "success";
+    var isPending = state == "pending";
+    var isFailure = state == "failure";
+}
+
+<section style="padding: 60px 20px; text-align: center;">
+    <div class="container" style="max-width: 600px;">
+        @if (isSuccess)
+        {
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 3rem; margin: 0;">✅</h1>
+            </div>
+            <h2 style="color: #28a745; font-size: 2rem; margin-bottom: 1rem; font-weight: bold;">¡Pago completado!</h2>
+            <p style="color: #666; font-size: 1.1rem; margin-bottom: 2rem;">
+                Tu membresía Bike Plus ha sido activada exitosamente. Ahora tienes acceso a todas las funciones premium.
+            </p>
+            <div style="background: #f0f8f4; border-left: 4px solid #28a745; padding: 1.5rem; margin-bottom: 2rem; text-align: left;">
+                <h5 style="color: #28a745; margin-top: 0;">Beneficios activados:</h5>
+                <ul style="color: #666; line-height: 1.8; margin: 0; padding-left: 1.5rem;">
+                    <li>🗺️ Rutas seguras con análisis de IA</li>
+                    <li>📊 Historial ilimitado de rutas</li>
+                    <li>🤖 Recomendaciones del agente ML</li>
+                    <li>🔔 Alertas de seguridad en tiempo real</li>
+                </ul>
+            </div>
+        }
+        else if (isPending)
+        {
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 3rem; margin: 0;">⏳</h1>
+            </div>
+            <h2 style="color: #ffc107; font-size: 2rem; margin-bottom: 1rem; font-weight: bold;">Pago pendiente</h2>
+            <p style="color: #666; font-size: 1.1rem; margin-bottom: 2rem;">
+                Tu pago está siendo procesado. Por favor espera a que se confirme. Recibirás un correo de confirmación pronto.
+            </p>
+            <div style="background: #fffbe6; border-left: 4px solid #ffc107; padding: 1.5rem; margin-bottom: 2rem; text-align: left;">
+                <h5 style="color: #ffc107; margin-top: 0;">📧 Verifica tu correo</h5>
+                <p style="color: #666; margin: 0;">Hemos enviado instrucciones a tu correo electrónico. Revisa tu bandeja de entrada y spam.</p>
+            </div>
+        }
+        else
+        {
+            <div style="margin-bottom: 2rem;">
+                <h1 style="font-size: 3rem; margin: 0;">❌</h1>
+            </div>
+            <h2 style="color: #dc3545; font-size: 2rem; margin-bottom: 1rem; font-weight: bold;">Pago no completado</h2>
+            <p style="color: #666; font-size: 1.1rem; margin-bottom: 2rem;">
+                No pudimos procesar tu pago. Por favor intenta de nuevo o contacta con soporte.
+            </p>
+            <div style="background: #f8d7da; border-left: 4px solid #dc3545; padding: 1.5rem; margin-bottom: 2rem; text-align: left;">
+                <h5 style="color: #dc3545; margin-top: 0;">🆘 Necesitas ayuda?</h5>
+                <p style="color: #666; margin: 0;">Contacta con nuestro equipo de soporte o intenta realizar el pago nuevamente.</p>
+            </div>
+        }
+
+        <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: center;">
+            <a href="@Url.Action("Index", "Membership")" class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; border: none; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                ← Volver a Membresía
+            </a>
+            <a href="@Url.Action("Index", "Home")" class="btn" style="background: #f0f0f0; color: #333; padding: 12px 30px; border: 1px solid #ddd; border-radius: 8px; text-decoration: none; font-weight: bold;">
+                🏠 Ir al inicio
+            </a>
+        </div>
+    </div>
+</section>
