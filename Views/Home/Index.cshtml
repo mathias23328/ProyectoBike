@@ -1,0 +1,146 @@
+﻿@model grupomathias.Models.RoutePlannerViewModel
+
+@{
+    ViewData["Title"] = "Rutas seguras";
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">Avance 1 · Web + HTTP + Git + Formularios</span>
+        <h1>Rutas seguras para moverte en bicicleta con menos riesgo y más control.</h1>
+        <p class="lead-copy">
+            Planifica trayectos urbanos con prioridad en ciclovías, calles iluminadas y recorridos más tranquilos.
+        </p>
+
+        <div class="hero-metrics">
+            <article>
+                <strong>3 capas</strong>
+                <span>seguridad, visibilidad y fluidez</span>
+            </article>
+            <article>
+                <strong>HTTP POST</strong>
+                <span>formulario con respuesta dinámica</span>
+            </article>
+            <article>
+                <strong>Git branch</strong>
+                <span>avance aislado para iterar rápido</span>
+            </article>
+        </div>
+    </div>
+
+    <div class="planner-card">
+        <div class="card-header-copy">
+            <h2>Planificador de ruta</h2>
+            <p>Completa el trayecto y ajusta las preferencias de seguridad.</p>
+        </div>
+
+        <form asp-action="Index" method="post" class="route-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
+            <div class="field-grid">
+                <div class="form-floating">
+                    <input asp-for="Origin" class="form-control" placeholder="Centro histórico" />
+                    <label asp-for="Origin"></label>
+                    <span asp-validation-for="Origin" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Destination" class="form-control" placeholder="Parque central" />
+                    <label asp-for="Destination"></label>
+                    <span asp-validation-for="Destination" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="DistanceKm" type="number" min="1" max="60" class="form-control" placeholder="8" />
+                    <label asp-for="DistanceKm"></label>
+                    <span asp-validation-for="DistanceKm" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating">
+                    <select asp-for="RiderType" class="form-select">
+                        <option value="">Selecciona una opción</option>
+                        <option value="urbano">Urbano</option>
+                        <option value="familiar">Familiar</option>
+                        <option value="entrenamiento">Entrenamiento</option>
+                    </select>
+                    <label asp-for="RiderType"></label>
+                    <span asp-validation-for="RiderType" class="text-danger small"></span>
+                </div>
+
+                <div class="form-floating">
+                    <select asp-for="DepartureWindow" class="form-select">
+                        <option value="">Selecciona una franja</option>
+                        <option value="Mañana">Mañana</option>
+                        <option value="Tarde">Tarde</option>
+                        <option value="Noche">Noche</option>
+                    </select>
+                    <label asp-for="DepartureWindow"></label>
+                    <span asp-validation-for="DepartureWindow" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="preference-grid">
+                <label class="preference-item">
+                    <input asp-for="PreferBikeLanes" class="form-check-input" />
+                    <span>Priorizar ciclovías</span>
+                </label>
+
+                <label class="preference-item">
+                    <input asp-for="AvoidHighTraffic" class="form-check-input" />
+                    <span>Evitar avenidas con tráfico pesado</span>
+                </label>
+
+                <label class="preference-item">
+                    <input asp-for="PreferWellLitAreas" class="form-check-input" />
+                    <span>Priorizar zonas iluminadas</span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-plan">Generar ruta segura</button>
+        </form>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card result-card">
+        <div class="result-header">
+            <div>
+                <span class="card-kicker">Resultado</span>
+                <h2>@Model.RecommendedRouteTitle</h2>
+            </div>
+            <div class="score-pill">Seguridad @Model.SafetyScore%</div>
+        </div>
+
+        <p>@Model.RecommendedRouteSummary</p>
+
+        @if (Model.RouteHighlights.Count > 0)
+        {
+            <ul class="highlight-list">
+                @foreach (var item in Model.RouteHighlights)
+                {
+                    <li>@item</li>
+                }
+            </ul>
+        }
+
+        <div class="result-note">@Model.RouteAdvice</div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">Qué resuelve este avance</span>
+        <h2>Formulario MVC con una salida útil</h2>
+        <p>
+            Esta versión muestra un flujo completo: la persona llena un formulario, la app responde por HTTP POST
+            y el servidor calcula una recomendación de ruta segura para bicicleta.
+        </p>
+        <div class="mini-points">
+            <span>Entrada validada con DataAnnotations.</span>
+            <span>Respuesta dinámica según preferencias y distancia.</span>
+            <span>Base lista para integrar mapas o datos reales después.</span>
+        </div>
+    </article>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
