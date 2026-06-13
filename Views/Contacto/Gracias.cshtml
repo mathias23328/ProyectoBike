@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Mensaje enviado";
+}
+
+<div class="text-center py-5">
+    <h1 class="text-success">¡Mensaje recibido!</h1>
+    <p class="lead">Hola <strong>@ViewData["Nombre"]</strong>, recibimos tu consulta sobre <strong>@ViewData["Asunto"]</strong>.</p>
+    <p class="text-muted">Patrón Post-Redirect-Get (PRG): el navegador no reenvía el formulario al refrescar.</p>
+    <a asp-controller="Contacto" asp-action="Index" class="btn btn-outline-primary">Enviar otro mensaje</a>
+</div>

@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = ViewData["Titulo"]?.ToString() ?? "Confirmación";
+}
+
+<div class="text-center py-5">
+    <h1 class="text-success">@ViewData["Titulo"]</h1>
+    <p class="lead">@ViewData["Mensaje"]</p>
+    <a asp-action="Crear" class="btn btn-outline-danger">Nuevo reporte</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Volver al inicio</a>
+</div>

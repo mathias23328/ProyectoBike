@@ -1,0 +1,47 @@
+@model mathiasBike.Models.HttpDemoViewModel
+@{
+    ViewData["Title"] = "Demo HTTP";
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        <h1>Demo HTTP: GET vs POST</h1>
+        <p class="text-muted">Práctica 1 — Métodos HTTP y formularios.</p>
+
+        <form asp-action="Index" method="get" class="card p-3 mb-3">
+            <h5>Formulario GET</h5>
+            <p class="small text-muted">Los datos viajan en la URL (?buscar=valor).</p>
+            <div class="input-group mb-2">
+                <input name="buscar" class="form-control" placeholder="Buscar ruta..." value="@Model.ValorEnviado" />
+                <button type="submit" class="btn btn-outline-primary">Buscar (GET)</button>
+            </div>
+        </form>
+
+        <form asp-action="Index" method="post" class="card p-3">
+            <h5>Formulario POST</h5>
+            <p class="small text-muted">Los datos viajan en el cuerpo de la petición.</p>
+            <div class="input-group mb-2">
+                <input asp-for="ValorEnviado" class="form-control" placeholder="Reportar incidente..." />
+                <button type="submit" class="btn btn-primary">Enviar (POST)</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card bg-light p-4">
+            <h5>Resultado de la petición</h5>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">Método</dt>
+                <dd class="col-sm-8"><span class="badge bg-dark">@Model.Metodo</span></dd>
+                <dt class="col-sm-4">Ruta</dt>
+                <dd class="col-sm-8"><code>@Model.Ruta</code></dd>
+                <dt class="col-sm-4">Query string</dt>
+                <dd class="col-sm-8"><code>@Model.Consulta</code></dd>
+                <dt class="col-sm-4">Valor</dt>
+                <dd class="col-sm-8">@(Model.ValorEnviado ?? "(vacío)")</dd>
+            </dl>
+            <hr />
+            <p class="mb-0">@Model.Explicacion</p>
+        </div>
+    </div>
+</div>
