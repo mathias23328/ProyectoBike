@@ -8,6 +8,7 @@ builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, relo
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
 builder.Services.AddDbContext<grupomathias.Data.ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=grupomathias.db"));
@@ -20,7 +21,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
         options.Password.RequireUppercase = false;
         options.Password.RequiredLength = 6;
     })
-    .AddEntityFrameworkStores<grupomathias.Data.ApplicationDbContext>();
+    .AddEntityFrameworkStores<grupomathias.Data.ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddDefaultUI();
 
 builder.Services.AddSession(options =>
 {
@@ -66,6 +69,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
 
+app.MapRazorPages();
 app.MapStaticAssets();
 app.MapControllers();
 
