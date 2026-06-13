@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using grupomathias.Data;
+using grupomathias.Models;
+using grupomathias.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using grupomathias.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 
@@ -14,17 +15,20 @@ public class HomeController : Controller
     private readonly ApplicationDbContext _dbContext;
     private readonly IDistributedCache _cache;
     private readonly IWebHostEnvironment _environment;
+    private readonly IBikeRouteAgentService _bikeRouteAgentService;
 
     public HomeController(
         ILogger<HomeController> logger,
         ApplicationDbContext dbContext,
         IDistributedCache cache,
-        IWebHostEnvironment environment)
+        IWebHostEnvironment environment,
+        IBikeRouteAgentService bikeRouteAgentService)
     {
         _logger = logger;
         _dbContext = dbContext;
         _cache = cache;
         _environment = environment;
+        _bikeRouteAgentService = bikeRouteAgentService;
     }
 
     public IActionResult Index()
@@ -50,6 +54,42 @@ public class HomeController : Controller
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Ml()
+    {
+        var status = await _bikeRouteAgentService.GetStatusAsync();
+        return View(new MlAnalysisViewModel
+        {
+            Request = new RouteAnalysisRequest
+            {
+                Origin = "Centro histórico",
+                Destination = "Parque lineal",
+                DistanceKm = 8,
+                RiderType = "urbano",
+                DepartureWindow = "Tarde",
+                PreferBikeLanes = true,
+                AvoidHighTraffic = true,
+                PreferWellLitAreas = true
+            },
+            Status = status
+        });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Ml(MlAnalysisViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            model.Status = await _bikeRouteAgentService.GetStatusAsync();
+            return View(model);
+        }
+
+        model.Response = await _bikeRouteAgentService.AnalyzeAsync(model.Request);
+        model.Status = await _bikeRouteAgentService.GetStatusAsync();
+        return View(model);
     }
 
     [HttpGet]

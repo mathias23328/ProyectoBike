@@ -14,6 +14,9 @@ public class MembershipPageViewModel
     public string BenefitsSummary { get; set; } = string.Empty;
 
     public string ApiHint { get; set; } = string.Empty;
+
+    // Mercado Pago public key for client-side SDK
+    public string PublicKey { get; set; } = string.Empty;
 }
 
 public class MembershipCheckoutRequest

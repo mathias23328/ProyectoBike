@@ -1,7 +1,6 @@
-using grupomathias.Models;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using grupomathias.Models;
 
 namespace grupomathias.Controllers;
 
@@ -28,29 +27,24 @@ public class AccountController : Controller
             return View(model);
         }
 
-        var user = new IdentityUser
-        {
-            UserName = model.UserName,
-            Email = model.Email
-        };
-
+        var user = new IdentityUser { UserName = model.UserName ?? model.Email, Email = model.Email };
         var result = await _userManager.CreateAsync(user, model.Password);
-        if (!result.Succeeded)
+        if (result.Succeeded)
         {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            return View(model);
+            await _signInManager.SignInAsync(user, isPersistent: false);
+            return RedirectToAction("Index", "Home");
         }
 
-        await _signInManager.SignInAsync(user, isPersistent: false);
-        return RedirectToAction("Index", "Home");
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+
+        return View(model);
     }
 
     [HttpGet]
-    public IActionResult Login() => View(new LoginViewModel());
+    public IActionResult Login(string? returnUrl = null) => View(new LoginViewModel { ReturnUrl = returnUrl ?? Url.Action("Index", "Home") });
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -61,20 +55,20 @@ public class AccountController : Controller
             return View(model);
         }
 
-        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, isPersistent: false, lockoutOnFailure: false);
-        if (!result.Succeeded)
+        var userName = model.UserName ?? string.Empty;
+        var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+        if (result.Succeeded)
         {
-            ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
-            return View(model);
+            return LocalRedirect(model.ReturnUrl ?? Url.Action("Index", "Home"));
         }
 
-        return RedirectToAction("Index", "Home");
+        ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
+        return View(model);
     }
 
-    [Authorize]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout(string? returnUrl = null)
     {
         await _signInManager.SignOutAsync();
         return RedirectToAction("Index", "Home");

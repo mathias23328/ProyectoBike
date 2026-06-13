@@ -32,7 +32,8 @@ public class MembershipController : Controller
             BenefitsSummary = "Acceso a rutas premium, historial ampliado, recomendaciones del agente ML y alertas de seguridad.",
             ApiHint = string.IsNullOrWhiteSpace(options.PublicKey)
                 ? "Mercado Pago está listo para activarse con configuración local."
-                : "Mercado Pago está configurado para generar checkouts de membresía."
+                : "Mercado Pago está configurado para generar checkouts de membresía.",
+            PublicKey = options.PublicKey ?? string.Empty
         });
     }
 
@@ -60,14 +61,26 @@ public class MembershipController : Controller
         }
 
         var result = await _membershipService.CreateCheckoutAsync(user.Id, request, cancellationToken);
-        if (!result.Success || string.IsNullOrWhiteSpace(result.CheckoutUrl))
+        if (!result.Success || (string.IsNullOrWhiteSpace(result.CheckoutUrl) && string.IsNullOrWhiteSpace(result.SandboxUrl)))
         {
             TempData["MembershipMessage"] = result.Message;
             return RedirectToAction(nameof(Index));
         }
 
+        var targetUrl = string.IsNullOrWhiteSpace(result.CheckoutUrl) ? result.SandboxUrl : result.CheckoutUrl;
         TempData["MembershipMessage"] = $"Checkout creado: {result.PreferenceId}.";
-        return Redirect(result.CheckoutUrl);
+
+        // Try server-side redirect first. Some browsers or extensions may block redirects to external sites;
+        // provide a small HTML fallback that opens the Mercado Pago page in a new window/tab if needed.
+        try
+        {
+            return Redirect(targetUrl!);
+        }
+        catch
+        {
+            var html = $"<html><head><meta http-equiv=\"refresh\" content=\"0;url={targetUrl}\" /></head><body>Si no eres redirigido automáticamente, <a href=\"{targetUrl}\" target=\"_blank\">haz clic aquí para pagar</a>.</body></html>";
+            return Content(html, "text/html");
+        }
     }
 
     [HttpGet]

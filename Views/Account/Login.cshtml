@@ -1,15 +1,16 @@
 @model grupomathias.Models.LoginViewModel
 
 @{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "Iniciar sesión";
 }
 
 <section class="auth-shell">
     <div class="auth-card">
-        <span class="card-kicker">Identity</span>
         <h1>Iniciar sesión</h1>
         <form asp-action="Login" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
             <label asp-for="UserName" class="form-label"></label>
             <input asp-for="UserName" class="form-control" />
             <span asp-validation-for="UserName" class="text-danger small"></span>
@@ -19,11 +20,6 @@
             <span asp-validation-for="Password" class="text-danger small"></span>
 
             <button type="submit" class="btn-plan mt-4">Entrar</button>
-        </form>
-
-        <form asp-action="Logout" asp-controller="Account" method="post" class="mt-3">
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn-plan">Cerrar sesión</button>
         </form>
     </div>
 </section>

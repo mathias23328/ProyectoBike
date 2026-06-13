@@ -6,10 +6,11 @@
 
 <section class="auth-shell">
     <div class="auth-card">
-        <span class="card-kicker">Identity</span>
         <h1>Crear usuario</h1>
         <form asp-action="Register" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
             <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+
             <label asp-for="UserName" class="form-label"></label>
             <input asp-for="UserName" class="form-control" />
             <span asp-validation-for="UserName" class="text-danger small"></span>

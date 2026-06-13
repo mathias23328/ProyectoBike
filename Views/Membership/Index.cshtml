@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <form asp-action="CreateCheckout" method="post" class="mt-4">
+            <form id="membershipForm" asp-action="CreateCheckout" method="post" class="mt-4">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="PlanName" value="@Model.PlanName" />
                 <input type="hidden" name="MonthlyPrice" value="@Model.MonthlyPrice" />
@@ -56,7 +56,7 @@
                 {
                     <input type="hidden" name="FullName" value="@(currentUser.UserName ?? "Usuario")" />
                     <input type="hidden" name="Email" value="@currentUser.Email" />
-                    <button type="submit" class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 1.1rem; padding: 12px 40px; border: none; border-radius: 8px; width: 100%; font-weight: bold;">
+                    <button id="mpButton" type="submit" class="btn" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-size: 1.1rem; padding: 12px 40px; border: none; border-radius: 8px; width: 100%; font-weight: bold;">
                         💳 Pagar con Mercado Pago
                     </button>
                 }
@@ -124,3 +124,71 @@
         <div class="result-note">Mercado Pago listo para el flujo de membresía.</div>
     </article>
 </section>
+
+<script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+    (function(){
+        const form = document.getElementById('membershipForm');
+        if (!form) return;
+
+        const publicKey = '@Model.PublicKey';
+        if (!publicKey) {
+            console.warn('Mercado Pago public key is not configured.');
+        }
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const fd = new FormData(form);
+            const payload = {
+                fullName: fd.get('FullName'),
+                email: fd.get('Email'),
+                planName: fd.get('PlanName'),
+                monthlyPrice: parseFloat(fd.get('MonthlyPrice')) || 0
+            };
+
+            try {
+                const res = await fetch('/api/membership/checkout', {
+    method: 'POST',
+    credentials: 'same-origin',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify(payload)
+});
+
+const data = await res.json();
+
+alert(JSON.stringify(data));
+
+const prefId = data.preferenceId || data.preference_id || data.preferenceId;
+                
+                const data = await res.json();
+                alert(JSON.stringify(data));
+                const prefId = data.preferenceId || data.preference_id || data.preferenceId;
+                if (!prefId) {
+                    alert('No se obtuvo preference id: ' + (data.message || JSON.stringify(data)));
+                    return;
+                }
+
+                if (!publicKey) {
+                    // As fallback, redirect to init_point/sandbox
+                    const url = data.checkoutUrl || data.sandboxUrl;
+                    if (url) window.location.href = url;
+                    else alert('Preference creado pero falta publicKey para abrir modal.');
+                    return;
+                }
+
+                const url = data.checkoutUrl || data.sandboxUrl;
+
+if (url) {
+    window.location.href = url;
+} else {
+    alert("No se recibió URL de Mercado Pago");
+}
+
+            } catch (err) {
+                console.error(err);
+                alert('Error creando checkout. Revisa la consola del servidor.');
+            }
+        });
+    })();
+</script>

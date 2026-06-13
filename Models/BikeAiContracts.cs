@@ -92,3 +92,12 @@ public class RouteTrainingPrediction
 
     public float Score { get; set; }
 }
+
+public class MlAnalysisViewModel
+{
+    public RouteAnalysisRequest Request { get; set; } = new();
+
+    public RouteAnalysisResponse? Response { get; set; }
+
+    public AgentStatusResponse Status { get; set; } = new();
+}
