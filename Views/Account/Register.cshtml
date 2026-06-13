@@ -1,0 +1,32 @@
+@model grupomathias.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registro";
+}
+
+<section class="auth-shell">
+    <div class="auth-card">
+        <span class="card-kicker">Identity</span>
+        <h1>Crear usuario</h1>
+        <form asp-action="Register" method="post" class="stacked-form">
+            <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+            <label asp-for="UserName" class="form-label"></label>
+            <input asp-for="UserName" class="form-control" />
+            <span asp-validation-for="UserName" class="text-danger small"></span>
+
+            <label asp-for="Email" class="form-label mt-3"></label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger small"></span>
+
+            <label asp-for="Password" class="form-label mt-3"></label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger small"></span>
+
+            <button type="submit" class="btn-plan mt-4">Registrar</button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

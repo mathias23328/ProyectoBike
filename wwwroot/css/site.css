@@ -200,6 +200,85 @@ body {
   margin-top: 1.5rem;
 }
 
+.platform-shell {
+  align-items: start;
+}
+
+.platform-status-grid {
+  display: grid;
+  gap: 0.85rem;
+  margin-top: 1.5rem;
+}
+
+.platform-status-grid article,
+.status-chip,
+.route-feed-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 18px;
+}
+
+.platform-status-grid article {
+  padding: 1rem;
+}
+
+.platform-status-grid strong,
+.route-feed-item strong {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: var(--accent-2);
+}
+
+.platform-status-grid span,
+.route-feed-item span {
+  color: var(--text-soft);
+}
+
+.status-stack,
+.route-feed,
+.stacked-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.status-chip {
+  padding: 0.9rem 1rem;
+  color: var(--text-main);
+}
+
+.route-feed-item {
+  padding: 0.95rem 1rem;
+}
+
+.auth-shell {
+  display: grid;
+  place-items: center;
+  min-height: 65vh;
+}
+
+.auth-card {
+  width: min(100%, 540px);
+  padding: 2rem;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(16px);
+}
+
+.auth-card h1 {
+  margin: 0.75rem 0 1.25rem;
+}
+
+.form-label {
+  color: var(--text-main);
+}
+
+.form-control,
+.form-select {
+  border-radius: 14px;
+}
+
 .insight-card {
   padding: 1.5rem;
 }

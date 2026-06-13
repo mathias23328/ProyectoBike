@@ -1,16 +1,30 @@
 using System.Diagnostics;
+using grupomathias.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using grupomathias.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Distributed;
 
 namespace grupomathias.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IDistributedCache _cache;
+    private readonly IWebHostEnvironment _environment;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(
+        ILogger<HomeController> logger,
+        ApplicationDbContext dbContext,
+        IDistributedCache cache,
+        IWebHostEnvironment environment)
     {
         _logger = logger;
+        _dbContext = dbContext;
+        _cache = cache;
+        _environment = environment;
     }
 
     public IActionResult Index()
@@ -20,7 +34,7 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Index(RoutePlannerViewModel model)
+    public async Task<IActionResult> Index(RoutePlannerViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -28,12 +42,46 @@ public class HomeController : Controller
         }
 
         ApplyRouteRecommendation(model);
+        await SaveRouteLogAsync(model);
+        await UpdatePlatformStateAsync(model);
         return View(model);
     }
 
     public IActionResult Privacy()
     {
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Platform()
+    {
+        ViewData["Title"] = "Plataforma web";
+        return View(await BuildPlatformDemoModelAsync());
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult SessionAction(string visitorName)
+    {
+        HttpContext.Session.SetString("VisitorName", visitorName);
+        TempData["PlatformNotice"] = $"Sesión guardada para {visitorName}.";
+        return RedirectToAction(nameof(Platform));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult CookieAction(string preferredTheme)
+    {
+        Response.Cookies.Append("bike-theme", preferredTheme, new CookieOptions
+        {
+            Expires = DateTimeOffset.UtcNow.AddDays(15),
+            HttpOnly = true,
+            IsEssential = true,
+            SameSite = SameSiteMode.Lax
+        });
+
+        TempData["PlatformNotice"] = $"Cookie guardada: {preferredTheme}.";
+        return RedirectToAction(nameof(Platform));
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -124,5 +172,95 @@ public class HomeController : Controller
             : model.SafetyScore >= 60
                 ? "Ruta equilibrada: segura y práctica para uso urbano diario."
                 : "Conviene revisar el trayecto final en el mapa antes de salir.";
+    }
+
+    private PlatformDemoViewModel BuildPlatformDemoModel()
+    {
+        var visitorName = HttpContext.Session.GetString("VisitorName") ?? "visitante";
+        var cookieTheme = Request.Cookies["bike-theme"] ?? "modo seguro";
+        var cacheProvider = _environment.EnvironmentName == Environments.Development ? "Memory cache local" : "Redis si está configurado";
+        var lastRoute = _cache.GetString("bike:last-route") ?? "Sin ruta en caché todavía.";
+
+        return new PlatformDemoViewModel
+        {
+            WelcomeMessage = User.Identity?.IsAuthenticated == true
+                ? $"Usuario autenticado: {User.Identity.Name}"
+                : "Usuario no autenticado todavía.",
+            SessionVisitMessage = $"Sesión activa para {visitorName}.",
+            TempDataMessage = TempData["PlatformNotice"]?.ToString() ?? "Sin mensaje de TempData en esta carga.",
+            CookieMessage = $"Cookie leída: {cookieTheme}.",
+            CacheProvider = cacheProvider,
+            CacheMessage = $"Cache de ruta: {lastRoute}",
+            DatabaseSummary = _dbContext.BikeRouteLogs.Any()
+                ? $"Rutas guardadas: {_dbContext.BikeRouteLogs.Count()}"
+                : "Aún no hay rutas guardadas en la base de datos SQLite.",
+            IdentityStatus = User.Identity?.IsAuthenticated == true ? "Sesión iniciada con Identity." : "Lista para registrar e iniciar sesión.",
+            RecentRoutes = _dbContext.BikeRouteLogs
+                .OrderByDescending(route => route.CreatedAtUtc)
+                .Take(5)
+                .Select(route => new BikeRouteSummary
+                {
+                    Origin = route.Origin,
+                    Destination = route.Destination,
+                    DistanceKm = route.DistanceKm,
+                    SafetyScore = route.SafetyScore
+                })
+                .ToList()
+        };
+    }
+
+    private async Task<PlatformDemoViewModel> BuildPlatformDemoModelAsync()
+    {
+        var model = BuildPlatformDemoModel();
+        model.RecentRoutes = await _dbContext.BikeRouteLogs
+            .OrderByDescending(route => route.CreatedAtUtc)
+            .Take(5)
+            .Select(route => new BikeRouteSummary
+            {
+                Origin = route.Origin,
+                Destination = route.Destination,
+                DistanceKm = route.DistanceKm,
+                SafetyScore = route.SafetyScore
+            })
+            .ToListAsync();
+
+        return model;
+    }
+
+    private async Task SaveRouteLogAsync(RoutePlannerViewModel model)
+    {
+        _dbContext.BikeRouteLogs.Add(new BikeRouteLog
+        {
+            Origin = model.Origin,
+            Destination = model.Destination,
+            DistanceKm = model.DistanceKm,
+            RiderType = model.RiderType,
+            SafetyScore = model.SafetyScore,
+            CreatedAtUtc = DateTime.UtcNow
+        });
+
+        await _dbContext.SaveChangesAsync();
+    }
+
+    private async Task UpdatePlatformStateAsync(RoutePlannerViewModel model)
+    {
+        HttpContext.Session.SetString("LastRoute", $"{model.Origin} -> {model.Destination}");
+        Response.Cookies.Append("bike-last-score", model.SafetyScore.ToString(), new CookieOptions
+        {
+            Expires = DateTimeOffset.UtcNow.AddDays(7),
+            HttpOnly = true,
+            IsEssential = true,
+            SameSite = SameSiteMode.Lax
+        });
+
+        TempData["PlatformNotice"] = $"Ruta guardada con {model.SafetyScore}% de seguridad.";
+
+        await _cache.SetStringAsync(
+            "bike:last-route",
+            $"{model.Origin} => {model.Destination} ({model.SafetyScore}%)",
+            new DistributedCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(2)
+            });
     }
 }

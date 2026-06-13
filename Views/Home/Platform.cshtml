@@ -1,0 +1,108 @@
+@model grupomathias.Models.PlatformDemoViewModel
+
+@{
+    ViewData["Title"] = "Plataforma web";
+}
+
+<section class="hero-shell platform-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">Avance 2 · Base de datos + HTTP + Sesiones + TempData + Cookies + Redis + Identity</span>
+        <h1>La app ahora muestra la plataforma completa de un proyecto web real.</h1>
+        <p class="lead-copy">
+            Esta sección concentra los mecanismos del servidor: base de datos SQLite, autenticación con Identity,
+            sesión de usuario, TempData, cookies y caché distribuida lista para Redis.
+        </p>
+
+        <div class="platform-status-grid">
+            <article>
+                <strong>@Model.IdentityStatus</strong>
+                <span>@Model.WelcomeMessage</span>
+            </article>
+            <article>
+                <strong>@Model.SessionVisitMessage</strong>
+                <span>@Model.TempDataMessage</span>
+            </article>
+            <article>
+                <strong>@Model.CookieMessage</strong>
+                <span>@Model.CacheProvider</span>
+            </article>
+        </div>
+    </div>
+
+    <div class="planner-card">
+        <div class="card-header-copy">
+            <h2>Estado rápido</h2>
+            <p>Los datos que la plataforma va mostrando salen del servidor y del almacenamiento compartido.</p>
+        </div>
+
+        <div class="status-stack">
+            <div class="status-chip">Base de datos: @Model.DatabaseSummary</div>
+            <div class="status-chip">Caché: @Model.CacheMessage</div>
+            <div class="status-chip">Identity: @Model.IdentityStatus</div>
+        </div>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">Sesiones y cookies</span>
+        <h2>Interactúa con valores del servidor</h2>
+
+        <form asp-action="SessionAction" asp-controller="Home" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            <label class="form-label">Nombre para sesión</label>
+            <input name="visitorName" class="form-control" placeholder="Por ejemplo: Mathias" />
+            <button type="submit" class="btn-plan mt-3">Guardar sesión</button>
+        </form>
+
+        <form asp-action="CookieAction" asp-controller="Home" method="post" class="stacked-form mt-4">
+            @Html.AntiForgeryToken()
+            <label class="form-label">Preferencia de cookie</label>
+            <input name="preferredTheme" class="form-control" placeholder="modo nocturno" />
+            <button type="submit" class="btn-plan mt-3">Guardar cookie</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">Base de datos</span>
+        <h2>Últimas rutas guardadas</h2>
+
+        @if (Model.RecentRoutes.Count == 0)
+        {
+            <p>Aún no hay rutas guardadas. Usa el formulario de inicio para registrar la primera recomendación.</p>
+        }
+        else
+        {
+            <div class="route-feed">
+                @foreach (var route in Model.RecentRoutes)
+                {
+                    <article class="route-feed-item">
+                        <strong>@route.Origin → @route.Destination</strong>
+                        <span>@route.DistanceKm km · Seguridad @route.SafetyScore%</span>
+                    </article>
+                }
+            </div>
+        }
+    </article>
+</section>
+
+<section class="insight-grid mt-3">
+    <article class="insight-card">
+        <span class="card-kicker">Redis</span>
+        <h2>Caché distribuida preparada</h2>
+        <p>
+            La aplicación usa <strong>Redis</strong> si la cadena de conexión está configurada. Si no, cae a memoria local
+            para que el proyecto siga funcionando en desarrollo.
+        </p>
+        <div class="result-note">@Model.CacheProvider</div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">Identity</span>
+        <h2>Acceso de usuarios</h2>
+        <p>
+            Con el menú superior puedes ir a registrar o iniciar sesión. El estado de autenticación se refleja aquí en tiempo real.
+        </p>
+        <div class="result-note">@Model.WelcomeMessage</div>
+    </article>
+</section>
