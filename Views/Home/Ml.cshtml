@@ -88,6 +88,11 @@
     </div>
 </section>
 
+<div class="agent-quick">
+    <button id="runAgentBtn" class="btn btn-outline-primary mt-3">Ejecutar agente (API)</button>
+    <div id="agentResult" class="mt-3"></div>
+</div>
+
 @if (Model.Response is not null)
 {
     <section class="insight-grid mt-3">
@@ -130,4 +135,56 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('runAgentBtn')?.addEventListener('click', async function () {
+            const get = (sel) => document.querySelector(sel)?.value ?? '';
+            const payload = {
+                Origin: get('[name="Request.Origin"]'),
+                Destination: get('[name="Request.Destination"]'),
+                DistanceKm: parseInt(get('[name="Request.DistanceKm"]')) || 8,
+                RiderType: get('[name="Request.RiderType"]') || 'urbano',
+                DepartureWindow: get('[name="Request.DepartureWindow"]') || 'Tarde',
+                PreferBikeLanes: document.querySelector('[name="Request.PreferBikeLanes"]')?.checked || false,
+                AvoidHighTraffic: document.querySelector('[name="Request.AvoidHighTraffic"]')?.checked || false,
+                PreferWellLitAreas: document.querySelector('[name="Request.PreferWellLitAreas"]')?.checked || false
+            };
+
+            const resultEl = document.getElementById('agentResult');
+            resultEl.innerHTML = '<em>Consultando estado del agente...</em>';
+
+            try {
+                const statusResp = await fetch('/api/bike/status');
+                if (statusResp.ok) {
+                    const status = await statusResp.json();
+                    resultEl.innerHTML = `<div><strong>Estado del modelo:</strong> ${status.modelState}<br/><strong>Última predicción:</strong> ${status.lastPredictionSummary}</div>`;
+                }
+
+                resultEl.innerHTML += '<div class="mt-2"><em>Ejecutando predicción del agente...</em></div>';
+
+                const res = await fetch('/api/bike/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    resultEl.innerHTML += '<div class="text-danger">Error: ' + res.status + ' ' + res.statusText + '</div>';
+                    return;
+                }
+
+                const data = await res.json();
+
+                // Friendly summary
+                const summary = `ID: ${data.routeId} — Seguridad: ${Math.round(data.safetyProbability * 100)}% (${data.safetyScore} pts) — ${data.recommendation}`;
+                const stepsHtml = (data.agentSteps || []).map(s => `<li><strong>${s.name}:</strong> ${s.detail}</li>`).join('');
+
+                resultEl.innerHTML = `<div class="agent-summary"><strong>Resumen:</strong> ${summary}</div>
+                    <div class="agent-reasoning mt-2"><strong>Razonamiento:</strong> ${data.agentReasoning}</div>
+                    <div class="agent-steps mt-2"><strong>Pasos:</strong><ul>${stepsHtml}</ul></div>
+                    <pre class="mt-2">${JSON.stringify(data, null, 2)}</pre>`;
+            } catch (err) {
+                resultEl.innerHTML = '<div class="text-danger">Error invocando agente: ' + err + '</div>';
+            }
+        });
+    </script>
 }
