@@ -13,120 +13,124 @@
 <div class="dashboard-page">
     <section class="hero-banner">
         <div class="hero-copy">
-            <span class="eyebrow">Avances académicos · BikeRoutes Safe</span>
-            <h1>Un tablero visual para tus prácticas.</h1>
-            <p>Los conceptos se muestran con tarjetas e indicadores visuales, y debajo tienes un formulario real para enviar tu avance.</p>
+            <span class="eyebrow">BikeRoutes Safe</span>
+            <h1>Panel funcional para tus prácticas.</h1>
+            <p>Accede a formularios, usa sesión y cookies, y registra avances desde la misma pantalla.</p>
             <div class="hero-badges">
-                <span class="hero-badge">Tarjetas visuales</span>
-                <span class="hero-badge">Formulario activo</span>
-                <span class="hero-badge">Diseño responsive</span>
+                <span class="hero-badge">Sesión activa: @Model.VisitCount</span>
+                <span class="hero-badge">Cookie: @Model.SavedPreference</span>
+                <span class="hero-badge">Última carga: @Model.LastVisit</span>
             </div>
         </div>
         <div class="hero-panel">
-            <div class="hero-panel-label">Resumen rápido</div>
-            <div class="hero-panel-title">Dos bloques, ocho conceptos y un formulario de entrega</div>
-            <div class="hero-panel-copy">La página está pensada como una mini presentación visual para mostrar el avance del proyecto sin depender de texto plano.</div>
+            <div class="hero-panel-label">Acciones rápidas</div>
+            <div class="hero-panel-title">Funciones reales del proyecto</div>
             <div class="hero-metrics">
                 <div>
-                    <strong>4</strong>
-                    <span>Temas del primer avance</span>
+                    <strong>HTTP</strong>
+                    <span>Demo interactiva</span>
                 </div>
                 <div>
-                    <strong>4</strong>
-                    <span>Temas del segundo avance</span>
+                    <strong>POST</strong>
+                    <span>Contacto y avance</span>
                 </div>
                 <div>
-                    <strong>1</strong>
-                    <span>Formulario de envío</span>
+                    <strong>STATE</strong>
+                    <span>Sesión y cookies</span>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="practice-section" id="avance-uno">
+    <section class="practice-section feature-section" id="accesos-rapidos">
         <div class="section-headline">
             <div>
-                <span class="section-kicker">Primer avance</span>
-                <h2>Primer avance visual</h2>
+                <span class="section-kicker">Accesos rápidos</span>
+                <h2>Entra a las funciones</h2>
             </div>
-            <p>La primera práctica se resume en cuatro bloques visuales que muestran el enfoque del proyecto.</p>
         </div>
-        <div class="practice-grid visual-grid">
-            <article class="practice-card theme-card">
-                <div class="theme-icon web">W</div>
-                <h3>Web</h3>
-                <p>Interfaz responsive con jerarquía visual y composición limpia.</p>
-                <span class="card-pill">UI / UX</span>
-            </article>
-            <article class="practice-card theme-card">
+        <div class="feature-grid">
+            <a class="feature-card" asp-controller="HttpDemo" asp-action="Index">
                 <div class="theme-icon http">H</div>
-                <h3>HTTP</h3>
-                <p>Peticiones y respuestas mostradas como flujo de comunicación.</p>
-                <span class="card-pill">Requests</span>
-            </article>
-            <article class="practice-card theme-card">
-                <div class="theme-icon git">G</div>
-                <h3>Git</h3>
-                <p>Control de versiones con commits y ramas para registrar el avance.</p>
-                <span class="card-pill">Versionado</span>
-            </article>
-            <article class="practice-card theme-card">
-                <div class="theme-icon form">F</div>
-                <h3>Formularios</h3>
-                <p>Entrada de datos pensada para capturar información de usuario.</p>
-                <span class="card-pill">Input</span>
-            </article>
+                <div>
+                    <h3>HTTP Demo</h3>
+                    <p>GET y POST funcionando en vivo.</p>
+                </div>
+            </a>
+            <a class="feature-card" asp-controller="Contacto" asp-action="Index">
+                <div class="theme-icon form">C</div>
+                <div>
+                    <h3>Contacto</h3>
+                    <p>Formulario con validación y POST.</p>
+                </div>
+            </a>
+            <a class="feature-card" asp-controller="Reporte" asp-action="Crear">
+                <div class="theme-icon temp">R</div>
+                <div>
+                    <h3>Reporte</h3>
+                    <p>Envía un reporte y confirma el resultado.</p>
+                </div>
+            </a>
+            <a class="feature-card" href="#estado-sesion">
+                <div class="theme-icon session">S</div>
+                <div>
+                    <h3>Sesión / Cookies</h3>
+                    <p>Guarda preferencia y contador de visitas.</p>
+                </div>
+            </a>
         </div>
     </section>
 
-    <section class="practice-section practice-section-alt" id="avance-dos">
+    <section class="practice-section practice-section-alt" id="estado-sesion">
         <div class="section-headline">
             <div>
-                <span class="section-kicker">Segundo avance</span>
-                <h2>Base de datos, HTTP y estado de la aplicación</h2>
+                <span class="section-kicker">Sesión y cookies</span>
+                <h2>Estado persistente en la página</h2>
             </div>
-            <p>El segundo bloque agrupa persistencia, aplicaciones web, métodos HTTP y estado de aplicación en tarjetas separadas.</p>
+            <p>Esto funciona de verdad: la sesión cuenta visitas y la cookie guarda tu preferencia.</p>
         </div>
-        <div class="practice-grid practice-grid-two-columns visual-grid">
-            <article class="practice-card practice-card-soft theme-card">
-                <div class="theme-icon data">D</div>
-                <h3>Base de datos + Redis</h3>
-                <p>Persistencia y caché para guardar y recuperar información rápidamente.</p>
-                <div class="tag-row">
-                    <span class="card-pill">Base de Datos</span>
-                    <span class="card-pill">Redis</span>
-                </div>
+        <div class="state-grid">
+            <article class="state-card">
+                <span class="state-label">Visitas en esta sesión</span>
+                <strong>@Model.VisitCount</strong>
+                <p>Cada vez que entras a la home, el contador sube con <span>Session</span>.</p>
             </article>
-            <article class="practice-card practice-card-soft theme-card">
-                <div class="theme-icon http">M</div>
-                <h3>Aplicaciones web + HTTP</h3>
-                <p>La app se organiza como una experiencia web que usa GET, POST, PUT y DELETE como acciones visibles.</p>
-                <div class="tag-row">
-                    <span class="card-pill">Aplicaciones web</span>
-                    <span class="card-pill">GET</span>
-                    <span class="card-pill">POST</span>
-                    <span class="card-pill">PUT</span>
-                    <span class="card-pill">DELETE</span>
-                </div>
+            <article class="state-card">
+                <span class="state-label">Preferencia guardada</span>
+                <strong>@Model.SavedPreference</strong>
+                <p>La selección queda guardada como cookie para la próxima visita.</p>
             </article>
-            <article class="practice-card practice-card-soft theme-card">
-                <div class="theme-icon session">S</div>
-                <h3>Sesiones + cookies</h3>
-                <p>Estado del usuario conservado entre peticiones sin perder el contexto.</p>
-                <div class="tag-row">
-                    <span class="card-pill">Sesiones</span>
-                    <span class="card-pill">Cookies</span>
-                </div>
+            <article class="state-card">
+                <span class="state-label">TempData</span>
+                <strong>Activo</strong>
+                <p>Los mensajes de confirmación aparecen después de enviar el formulario o guardar una preferencia.</p>
             </article>
-            <article class="practice-card practice-card-soft theme-card">
-                <div class="theme-icon temp">T</div>
-                <h3>TempData + ViewData</h3>
-                <p>Mensajes temporales y datos de vista para comunicar pantallas entre sí.</p>
-                <div class="tag-row">
-                    <span class="card-pill">TempData</span>
-                    <span class="card-pill">ViewData</span>
-                </div>
+            <article class="state-card">
+                <span class="state-label">ViewData</span>
+                <strong>En uso</strong>
+                <p>Se mantiene el título y la información visual de las vistas secundarias.</p>
             </article>
+        </div>
+
+        <div class="state-actions">
+            <form asp-action="GuardarPreferencia" method="post" class="state-form">
+                @Html.AntiForgeryToken()
+                <label for="rutaPreferida" class="form-label">Guardar preferencia en cookie</label>
+                <div class="input-group">
+                    <select id="rutaPreferida" name="rutaPreferida" class="form-select">
+                        <option value="">Selecciona una opción</option>
+                        <option value="Ruta universitaria">Ruta universitaria</option>
+                        <option value="Ruta nocturna">Ruta nocturna</option>
+                        <option value="Ruta express">Ruta express</option>
+                    </select>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+
+            <form asp-action="ReiniciarEstado" method="post" class="state-reset">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-danger">Resetear sesión y cookie</button>
+            </form>
         </div>
     </section>
 
@@ -134,20 +138,20 @@
         <div class="section-headline">
             <div>
                 <span class="section-kicker">Formulario</span>
-                <h2>Envía tu avance</h2>
+                <h2>Envía un avance real</h2>
             </div>
-            <p>Un formulario real para registrar el avance del proyecto y demostrar el envío por HTTP POST.</p>
+            <p>El envío se procesa por POST y deja una confirmación con TempData.</p>
         </div>
 
         <div class="form-shell">
             <div class="form-aside">
                 <div class="aside-badge">POST</div>
-                <h3>Registro de práctica</h3>
-                <p>Completa los campos y envía el formulario para dejar constancia del avance académico.</p>
+                <h3>Registro funcional</h3>
+                <p>Este formulario demuestra validación, envío y confirmación sin depender de texto adicional.</p>
                 <ul class="aside-points">
-                    <li>Validación básica en el servidor</li>
-                    <li>Confirmación después de enviar</li>
-                    <li>Diseño alineado con la página</li>
+                    <li>Validación en el servidor</li>
+                    <li>Confirmación con TempData</li>
+                    <li>Datos de práctica persistentes</li>
                 </ul>
             </div>
 
