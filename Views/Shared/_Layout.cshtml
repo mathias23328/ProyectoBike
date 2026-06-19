@@ -33,6 +33,9 @@
                             <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Chat">Chatbot</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-controller="DataManagement" asp-action="Maps">🗺️ Mapas</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" asp-area="" asp-controller="Membership" asp-action="Index">Membresía</a>
                         </li>
                         <li class="nav-item">
@@ -57,9 +60,189 @@
             &copy; 2026 - Proyecto Bike - Rutas seguras para ciclistas urbanos
         </div>
     </footer>
+
+    <!-- Botón flotante de tema -->
+    <button id="themeToggle" class="theme-toggle" title="Cambiar tema">
+        <span class="theme-icon">🌙</span>
+    </button>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Detectar tema guardado o preferencia del sistema
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            applyTheme(savedTheme);
+        }
+
+        // Aplicar tema
+        function applyTheme(theme) {
+            const html = document.documentElement;
+            const toggle = document.getElementById('themeToggle');
+            const icon = toggle.querySelector('.theme-icon');
+
+            if (theme === 'dark') {
+                html.style.colorScheme = 'dark';
+                html.style.backgroundColor = '#1a1a1a';
+                html.style.color = '#ffffff';
+                document.body.style.backgroundColor = '#1a1a1a';
+                document.body.style.color = '#ffffff';
+                icon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+                applyDarkMode();
+            } else {
+                html.style.colorScheme = 'light';
+                html.style.backgroundColor = '#ffffff';
+                html.style.color = '#000000';
+                document.body.style.backgroundColor = '#ffffff';
+                document.body.style.color = '#000000';
+                icon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+                applyLightMode();
+            }
+        }
+
+        // Modo oscuro
+        function applyDarkMode() {
+            // Navbar
+            document.querySelectorAll('.navbar').forEach(nav => {
+                nav.style.backgroundColor = '#2d2d2d';
+                nav.style.borderBottomColor = '#444';
+            });
+
+            // Cards
+            document.querySelectorAll('.insight-card, .route-card, .planner-card').forEach(card => {
+                card.style.backgroundColor = '#2d2d2d';
+                card.style.color = '#ffffff';
+                card.style.borderColor = '#444';
+            });
+
+            // Inputs
+            document.querySelectorAll('input, select, textarea').forEach(input => {
+                input.style.backgroundColor = '#3a3a3a';
+                input.style.color = '#ffffff';
+                input.style.borderColor = '#555';
+            });
+
+            // Botones
+            document.querySelectorAll('button, .btn').forEach(btn => {
+                if (!btn.id.includes('theme')) {
+                    if (btn.classList.contains('btn-primary') || btn.classList.contains('btn-plan')) {
+                        btn.style.backgroundColor = '#0b7dda';
+                    }
+                }
+            });
+
+            // Footer
+            document.querySelectorAll('footer').forEach(footer => {
+                footer.style.backgroundColor = '#2d2d2d';
+                footer.style.color = '#aaa';
+                footer.style.borderTopColor = '#444';
+            });
+
+            // Texto genérico
+            document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, a').forEach(el => {
+                if (el.style.color === 'rgb(45, 53, 72)' || !el.style.color) {
+                    el.style.color = '#e0e0e0';
+                }
+            });
+        }
+
+        // Modo claro
+        function applyLightMode() {
+            // Navbar
+            document.querySelectorAll('.navbar').forEach(nav => {
+                nav.style.backgroundColor = '';
+                nav.style.borderBottomColor = '';
+            });
+
+            // Cards
+            document.querySelectorAll('.insight-card, .route-card, .planner-card').forEach(card => {
+                card.style.backgroundColor = '#ffffff';
+                card.style.color = '#000000';
+                card.style.borderColor = '';
+            });
+
+            // Inputs
+            document.querySelectorAll('input, select, textarea').forEach(input => {
+                input.style.backgroundColor = '#ffffff';
+                input.style.color = '#000000';
+                input.style.borderColor = '';
+            });
+
+            // Botones
+            document.querySelectorAll('button, .btn').forEach(btn => {
+                if (!btn.id.includes('theme')) {
+                    btn.style.backgroundColor = '';
+                }
+            });
+
+            // Footer
+            document.querySelectorAll('footer').forEach(footer => {
+                footer.style.backgroundColor = '';
+                footer.style.color = '';
+                footer.style.borderTopColor = '';
+            });
+
+            // Texto genérico
+            document.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, a').forEach(el => {
+                el.style.color = '';
+            });
+        }
+
+        // Event listener para el botón
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(newTheme);
+        });
+
+        // Inicializar al cargar
+        document.addEventListener('DOMContentLoaded', initTheme);
+    </script>
+
+    <style>
+        .theme-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: 2px solid white;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .theme-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-icon {
+            transform: rotate(20deg);
+        }
+    </style>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

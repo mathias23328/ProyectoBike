@@ -49,7 +49,8 @@ else
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IBikeRouteAgentService, BikeRouteAgentService>();
-    builder.Services.AddScoped<IMercadoPagoMembershipService, MercadoPagoMembershipService>();
+builder.Services.AddScoped<IMercadoPagoMembershipService, MercadoPagoMembershipService>();
+builder.Services.AddScoped<IWebDataService, WebDataService>();
 
 var app = builder.Build();
 

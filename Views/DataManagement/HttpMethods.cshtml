@@ -1,0 +1,435 @@
+@{
+    var methods = (ViewData["Methods"] as dynamic[]) ?? new dynamic[0];
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">HTTP Methods</span>
+        <h1>Verbos HTTP Principales</h1>
+        <p class="lead-copy">
+            HTTP define diferentes métodos (verbos) para indicar qué acción
+            se desea realizar en un recurso. GET, POST, PUT, DELETE son los principales.
+        </p>
+    </div>
+</section>
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-info">
+        @TempData["Message"]
+    </div>
+}
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">🌐 Métodos HTTP</span>
+        <h2>Verbos Principales</h2>
+        
+        <table class="methods-table">
+            <tr>
+                <th>Método</th>
+                <th>Uso</th>
+                <th>Seguro</th>
+                <th>Idempotente</th>
+            </tr>
+            <tr>
+                <td><strong>GET</strong></td>
+                <td>Obtener datos</td>
+                <td>✅</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><strong>POST</strong></td>
+                <td>Crear datos</td>
+                <td>❌</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><strong>PUT</strong></td>
+                <td>Actualizar datos</td>
+                <td>❌</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><strong>DELETE</strong></td>
+                <td>Eliminar datos</td>
+                <td>❌</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><strong>PATCH</strong></td>
+                <td>Actualización parcial</td>
+                <td>❌</td>
+                <td>❌</td>
+            </tr>
+            <tr>
+                <td><strong>HEAD</strong></td>
+                <td>GET sin cuerpo</td>
+                <td>✅</td>
+                <td>✅</td>
+            </tr>
+            <tr>
+                <td><strong>OPTIONS</strong></td>
+                <td>Metadatos</td>
+                <td>✅</td>
+                <td>✅</td>
+            </tr>
+        </table>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📍 GET - Obtener</span>
+        <h2>Lectura de datos</h2>
+        
+        <div class="method-example">
+            <strong>Descripción:</strong> Solicita datos sin modificar el servidor
+            <br/><br/>
+            <strong>Características:</strong>
+            <ul>
+                <li>Seguro (no modifica datos)</li>
+                <li>Idempotente (múltiples llamadas = mismo resultado)</li>
+                <li>Los datos van en la URL</li>
+                <li>Se cachea fácilmente</li>
+            </ul>
+            <br/>
+            <strong>Ejemplo:</strong>
+            <pre><code>[HttpGet]
+public IActionResult GetUser(int id)
+{
+    var user = _db.Users.Find(id);
+    return View(user);
+}</code></pre>
+        </div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📝 POST - Crear</span>
+        <h2>Creación de datos</h2>
+        
+        <div class="method-example">
+            <strong>Descripción:</strong> Envía datos para crear un nuevo recurso
+            <br/><br/>
+            <strong>Características:</strong>
+            <ul>
+                <li>No es seguro (modifica datos)</li>
+                <li>No es idempotente (múltiples = múltiples creaciones)</li>
+                <li>Los datos van en el cuerpo (body)</li>
+                <li>Requiere validación en servidor</li>
+                <li>Requiere [ValidateAntiForgeryToken]</li>
+            </ul>
+            <br/>
+            <strong>Ejemplo:</strong>
+            <pre><code>[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult CreateUser(User model)
+{
+    if (!ModelState.IsValid)
+        return View(model);
+    
+    _db.Users.Add(model);
+    _db.SaveChanges();
+    return RedirectToAction("Index");
+}</code></pre>
+        </div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🔄 PUT - Actualizar</span>
+        <h2>Modificación de datos</h2>
+        
+        <div class="method-example">
+            <strong>Descripción:</strong> Reemplaza un recurso existente
+            <br/><br/>
+            <strong>Características:</strong>
+            <ul>
+                <li>No es seguro (modifica datos)</li>
+                <li>Idempotente (múltiples = mismo estado final)</li>
+                <li>Requiere identificador del recurso</li>
+                <li>Reemplaza el recurso completo</li>
+            </ul>
+            <br/>
+            <strong>Ejemplo:</strong>
+            <pre><code>[HttpPut("{id}")]
+[ValidateAntiForgeryToken]
+public IActionResult UpdateUser(int id, User model)
+{
+    var user = _db.Users.Find(id);
+    user.Name = model.Name;
+    _db.SaveChanges();
+    return Ok();
+}</code></pre>
+        </div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🗑️ DELETE - Eliminar</span>
+        <h2>Eliminación de datos</h2>
+        
+        <div class="method-example">
+            <strong>Descripción:</strong> Elimina un recurso existente
+            <br/><br/>
+            <strong>Características:</strong>
+            <ul>
+                <li>No es seguro (modifica datos)</li>
+                <li>Idempotente (la segunda vez no hay nada)</li>
+                <li>Requiere identificador del recurso</li>
+                <li>Destructivo (no se puede deshacer fácilmente)</li>
+            </ul>
+            <br/>
+            <strong>Ejemplo:</strong>
+            <pre><code>[HttpDelete("{id}")]
+[ValidateAntiForgeryToken]
+public IActionResult DeleteUser(int id)
+{
+    var user = _db.Users.Find(id);
+    _db.Users.Remove(user);
+    _db.SaveChanges();
+    return Ok();
+}</code></pre>
+        </div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📊 CRUD Completo</span>
+        <h2>Operaciones Básicas</h2>
+        
+        <table class="crud-table">
+            <tr>
+                <th>Operación</th>
+                <th>Método HTTP</th>
+                <th>Ruta</th>
+                <th>Función</th>
+            </tr>
+            <tr>
+                <td>Create</td>
+                <td><span class="badge badge-success">POST</span></td>
+                <td>/api/users</td>
+                <td>Crear nuevo usuario</td>
+            </tr>
+            <tr>
+                <td>Read</td>
+                <td><span class="badge badge-info">GET</span></td>
+                <td>/api/users/{id}</td>
+                <td>Obtener usuario por ID</td>
+            </tr>
+            <tr>
+                <td>Update</td>
+                <td><span class="badge badge-warning">PUT</span></td>
+                <td>/api/users/{id}</td>
+                <td>Actualizar usuario</td>
+            </tr>
+            <tr>
+                <td>Delete</td>
+                <td><span class="badge badge-danger">DELETE</span></td>
+                <td>/api/users/{id}</td>
+                <td>Eliminar usuario</td>
+            </tr>
+            <tr>
+                <td>List</td>
+                <td><span class="badge badge-info">GET</span></td>
+                <td>/api/users</td>
+                <td>Listar todos</td>
+            </tr>
+        </table>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📝 Ejemplo POST Aquí</span>
+        <h2>Prueba un Formulario</h2>
+        
+        <form asp-action="HttpMethods" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="data" class="form-label">Envía datos con POST:</label>
+                <input type="text" id="data" name="data" 
+                       class="form-control" placeholder="Escribe algo..." required />
+            </div>
+            
+            <button type="submit" class="btn-plan">Enviar con POST</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🎯 Buenas Prácticas</span>
+        <h2>RESTful API</h2>
+        <ul class="practices">
+            <li>✅ Usa el método HTTP correcto para cada operación</li>
+            <li>✅ GET no debe modificar datos</li>
+            <li>✅ POST para crear, PUT para actualizar</li>
+            <li>✅ Retorna códigos HTTP apropiad os (200, 201, 404, 500)</li>
+            <li>✅ Usa URLs que representen recursos (/users, /posts)</li>
+            <li>✅ Valida entrada en servidor</li>
+            <li>✅ Protege con [Authorize] si es necesario</li>
+            <li>✅ Usa [ValidateAntiForgeryToken] en POST</li>
+            <li>❌ No uses GET para modificar datos</li>
+            <li>❌ No confundas métodos (POST para todo)</li>
+        </ul>
+    </article>
+</section>
+
+<style>
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+        background: #bee3f8;
+        color: #2c5282;
+        border-left: 4px solid #3182ce;
+    }
+
+    .methods-table,
+    .crud-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .methods-table th,
+    .methods-table td,
+    .crud-table th,
+    .crud-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .methods-table th,
+    .crud-table th {
+        background: #edf2f7;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .methods-table tr:hover,
+    .crud-table tr:hover {
+        background: #f7fafc;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    .badge-success {
+        background: #38a169;
+    }
+
+    .badge-info {
+        background: #3182ce;
+    }
+
+    .badge-warning {
+        background: #d69e2e;
+    }
+
+    .badge-danger {
+        background: #e53e3e;
+    }
+
+    .method-example {
+        background: #f7fafc;
+        padding: 1.5rem;
+        border-radius: 4px;
+        border-left: 3px solid #667eea;
+    }
+
+    .method-example strong {
+        color: #2d3748;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .method-example ul {
+        list-style: none;
+        padding: 0;
+        margin-left: 0;
+    }
+
+    .method-example li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .method-example li:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #667eea;
+        font-weight: bold;
+    }
+
+    pre {
+        background: white;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 1rem 0;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .stacked-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        padding: 0.75rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .btn-plan {
+        padding: 0.75rem 1.5rem;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+
+    .practices {
+        list-style: none;
+        padding: 0;
+    }
+
+    .practices li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+</style>

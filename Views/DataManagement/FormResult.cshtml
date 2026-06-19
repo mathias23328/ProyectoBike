@@ -1,0 +1,161 @@
+@if (TempData["FormSuccess"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["FormSuccess"]
+    </div>
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">Resultado</span>
+        <h1>Formulario Procesado</h1>
+        <p class="lead-copy">
+            El formulario fue procesado correctamente y los datos se guardaron
+            en sesión, cookie y caché.
+        </p>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">✅ Éxito</span>
+        <h2>Datos Guardados</h2>
+        
+        <div class="result-info">
+            <p>El nombre se guardó en <strong>Session</strong>:</p>
+            <code>@ViewData["FormName"]</code>
+            
+            <p class="mt-3">El email se guardó en <strong>Cookie</strong></p>
+            <p class="mt-3">El objeto completo se guardó en <strong>Redis Cache</strong></p>
+        </div>
+
+        <a href="@Url.Action("Index", "DataManagement")" class="btn-plan mt-3">
+            ← Volver al inicio
+        </a>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📊 Resumen</span>
+        <h2>Patrón POST-Redirect-GET</h2>
+        
+        <div class="flow-diagram">
+            <div class="flow-step">
+                <strong>1. POST</strong>
+                <span>Usuario envía formulario</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+                <strong>2. Validar</strong>
+                <span>ModelState.IsValid</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+                <strong>3. Procesar</strong>
+                <span>Guardar datos</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+                <strong>4. Redirect</strong>
+                <span>POST-Redirect-GET</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+                <strong>5. GET</strong>
+                <span>Mostrar resultado</span>
+            </div>
+        </div>
+    </article>
+</section>
+
+<style>
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+    }
+
+    .alert-success {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left: 4px solid #38a169;
+    }
+
+    .result-info {
+        background: #f7fafc;
+        padding: 1.5rem;
+        border-radius: 4px;
+        border-left: 3px solid #667eea;
+    }
+
+    .result-info p {
+        color: #2d3748;
+        margin: 1rem 0 0.5rem;
+        font-weight: 500;
+    }
+
+    .result-info code {
+        background: white;
+        padding: 0.5rem;
+        border-radius: 4px;
+        display: block;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: #667eea;
+        word-break: break-all;
+    }
+
+    .mt-3 {
+        margin-top: 1rem;
+    }
+
+    .btn-plan {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background: #667eea;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+
+    .flow-diagram {
+        background: #f7fafc;
+        padding: 1.5rem;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .flow-step {
+        background: white;
+        padding: 1rem;
+        border-radius: 4px;
+        border-left: 3px solid #667eea;
+        width: 100%;
+        text-align: center;
+    }
+
+    .flow-step strong {
+        display: block;
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+    }
+
+    .flow-step span {
+        font-size: 0.875rem;
+        color: #718096;
+    }
+
+    .flow-arrow {
+        color: #667eea;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+</style>

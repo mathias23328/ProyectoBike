@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Gestión de Sesiones";
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">Sessions</span>
+        <h1>Gestión de Sesiones de Usuario</h1>
+        <p class="lead-copy">
+            Las sesiones persisten durante toda la conexión del usuario. Los datos se almacenan en el servidor
+            y se asocian al usuario mediante una cookie de sesión.
+        </p>
+    </div>
+</section>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">🔐 Sesión Actual</span>
+        <h2>Estado de la Sesión</h2>
+        <p>@ViewData["SessionData"]</p>
+        
+        <form asp-action="ClearSession" method="post" class="mt-3">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-danger">Limpiar Sesión</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">➕ Guardar Valor en Sesión</span>
+        <h2>Nuevo Valor de Sesión</h2>
+        
+        <form asp-action="Sessions" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="sessionValue" class="form-label">Valor de sesión:</label>
+                <input type="text" id="sessionValue" name="sessionValue" 
+                       class="form-control" placeholder="Ej: usuario123" required />
+            </div>
+            
+            <button type="submit" class="btn-plan">Guardar en Sesión</button>
+        </form>
+    </article>
+</section>
+
+<section class="insight-grid mt-4">
+    <article class="insight-card">
+        <span class="card-kicker">📚 Información Técnica</span>
+        <h2>Cómo funcionan las sesiones</h2>
+        <ul class="technical-list">
+            <li>Las sesiones se almacenan en el servidor (memoria o base de datos)</li>
+            <li>Se accede mediante una cookie de sesión en el navegador</li>
+            <li>Tienen un tiempo de expiración por inactividad (por defecto 30 minutos)</li>
+            <li>Seguras para datos sensibles (no se envían al cliente en texto plano)</li>
+            <li>Perfecto para almacenar ID de usuario, preferencias, etc.</li>
+        </ul>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">💻 Código de Ejemplo</span>
+        <h2>Implementación</h2>
+        <pre><code>// Guardar en sesión
+HttpContext.Session.SetString("key", "value");
+
+// Obtener de sesión
+string value = HttpContext.Session.GetString("key");
+
+// Limpiar sesión
+HttpContext.Session.Clear();</code></pre>
+    </article>
+</section>
+
+<style>
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+    }
+
+    .alert-success {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left: 4px solid #38a169;
+    }
+
+    .btn-danger {
+        padding: 0.5rem 1rem;
+        background: #f56565;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-danger:hover {
+        background: #e53e3e;
+    }
+
+    .technical-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .technical-list li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .technical-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #38a169;
+        font-weight: bold;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+</style>

@@ -1,0 +1,198 @@
+@{
+    ViewData["Title"] = "ViewData Demo";
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">ViewData</span>
+        <h1>Datos para la Vista Actual</h1>
+        <p class="lead-copy">
+            ViewData permite pasar datos del controlador a la vista. Solo existen durante el renderizado
+            de esa vista específica. No persisten en redirecciones.
+        </p>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">📋 Datos Actuales</span>
+        <h2>ViewData Disponible</h2>
+        <ul class="viewdata-list">
+            <li>
+                <strong>Título:</strong><br />
+                <code>@ViewData["Title"]</code>
+            </li>
+            <li>
+                <strong>Mensaje:</strong><br />
+                <code>@ViewData["Message"]</code>
+            </li>
+            <li>
+                <strong>Marca de tiempo:</strong><br />
+                <code>@ViewData["Timestamp"]</code>
+            </li>
+            <li>
+                <strong>User Agent:</strong><br />
+                <code>@ViewData["UserAgent"]</code>
+            </li>
+            <li>
+                <strong>IP Address:</strong><br />
+                <code>@ViewData["IpAddress"]</code>
+            </li>
+        </ul>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📚 Información Técnica</span>
+        <h2>Características de ViewData</h2>
+        <ul class="technical-list">
+            <li>Se pasa desde el controlador a la vista</li>
+            <li>Es un diccionario (clave-valor) de tipo object</li>
+            <li>No persiste en redirecciones (usa TempData para eso)</li>
+            <li>Acceso seguro con null-coalescing operator: @@ ViewData["key"] ?? "default"</li>
+            <li>Útil para títulos de página, mensajes pequeños, datos contextuales</li>
+            <li>Mejor alternativa: pasar un modelo tipado fuertemente</li>
+        </ul>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">💻 Código de Ejemplo</span>
+        <h2>En el Controlador</h2>
+        <pre><code>// En el controlador
+public IActionResult ViewData()
+{
+    ViewData["Title"] = "Mi Título";
+    ViewData["Message"] = "Hola mundo";
+    ViewData["Timestamp"] = DateTime.Now;
+    return View();
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🎨 Código en la Vista</span>
+        <h2>En el archivo Razor</h2>
+        <pre><code>&lt;!-- En la vista .cshtml --&gt;
+&lt;h1&gt;@ViewData["Title"]&lt;/h1&gt;
+&lt;p&gt;@ViewData["Message"]&lt;/p&gt;
+&lt;time&gt;@ViewData["Timestamp"]&lt;/time&gt;
+
+&lt;!-- Con null-coalescing --&gt;
+&lt;p&gt;@(ViewData["Message"] ?? "Sin datos")&lt;/p&gt;</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">⚡ Comparación</span>
+        <h2>ViewData vs Modelo vs TempData</h2>
+        <table class="comparison-table">
+            <tr>
+                <th>Característica</th>
+                <th>ViewData</th>
+                <th>Modelo</th>
+                <th>TempData</th>
+            </tr>
+            <tr>
+                <td>Tipado fuertemente</td>
+                <td>❌ No</td>
+                <td>✅ Sí</td>
+                <td>❌ No</td>
+            </tr>
+            <tr>
+                <td>Persiste redirección</td>
+                <td>❌ No</td>
+                <td>N/A</td>
+                <td>✅ Sí</td>
+            </tr>
+            <tr>
+                <td>Recomendado</td>
+                <td>Datos menores</td>
+                <td>Datos principales</td>
+                <td>Mensajes post-acción</td>
+            </tr>
+        </table>
+    </article>
+</section>
+
+<style>
+    .viewdata-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .viewdata-list li {
+        padding: 1rem;
+        background: #f7fafc;
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+        border-left: 3px solid #667eea;
+    }
+
+    .viewdata-list strong {
+        color: #2d3748;
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+
+    .viewdata-list code {
+        background: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 2px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: #667eea;
+        word-break: break-all;
+    }
+
+    .technical-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .technical-list li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .technical-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #38a169;
+        font-weight: bold;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .comparison-table th {
+        background: #edf2f7;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .comparison-table tr:hover {
+        background: #f7fafc;
+    }
+</style>

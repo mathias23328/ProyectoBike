@@ -1,0 +1,278 @@
+@{
+    ViewData["Title"] = "Rutas de Bicicleta - Lima";
+    var routes = ViewData["Routes"] as List<object>;
+    dynamic centerData = ViewData["LimaCenter"];
+}
+
+<section class="hero-shell maps-hero">
+    <div class="hero-copy">
+        <h1>Rutas de Bicicleta en Lima</h1>
+        <p class="lead-copy">
+            Descubre las mejores rutas para andar en bicicleta por la capital. Navega el mapa interactivo
+            para explorar distancias, dificultad y guardar tus rutas favoritas.
+        </p>
+    </div>
+</section>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success mt-4">
+        @TempData["Success"]
+    </div>
+}
+
+<!-- Mapa interactivo -->
+<section class="maps-container">
+    <div id="map" class="map-view"></div>
+</section>
+
+<!-- Rutas disponibles en sidebar -->
+<section class="maps-grid">
+    <div class="routes-sidebar">
+        <h3>Rutas Disponibles</h3>
+        
+        @if (routes != null && routes.Count > 0)
+        {
+            <div class="routes-list">
+                @foreach (dynamic route in routes)
+                {
+                    <div class="route-card">
+                        <div class="route-header">
+                            <h4>@route.Name</h4>
+                            <span class="difficulty-badge @GetDifficultyClass(route.Difficulty)">
+                                @route.Difficulty
+                            </span>
+                        </div>
+                        <p class="route-distance">📏 @route.Distance km</p>
+                        <form method="post" asp-action="Maps">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="routeName" value="@route.Name" />
+                            <button type="submit" class="btn-favorite">⭐ Favorita</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+<style>
+    .maps-hero {
+        background: linear-gradient(135deg, #1a73e8 0%, #1a73e8 50%, #34a853 100%);
+        padding: 3rem 2rem;
+        text-align: center;
+    }
+
+    .maps-hero h1 {
+        color: white;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+
+    .maps-hero .lead-copy {
+        color: rgba(255, 255, 255, 0.95);
+        font-size: 1.1rem;
+    }
+
+    .maps-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .map-view {
+        height: 500px;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        margin-bottom: 2rem;
+    }
+
+    .maps-grid {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem 3rem;
+    }
+
+    .routes-sidebar h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        color: #202124;
+        font-weight: 600;
+    }
+
+    .routes-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .route-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        border: 1px solid #e8e8e8;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+    }
+
+    .route-card:hover {
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+        transform: translateY(-2px);
+    }
+
+    .route-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+    }
+
+    .route-header h4 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: #202124;
+        font-weight: 600;
+        flex: 1;
+    }
+
+    .difficulty-badge {
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        white-space: nowrap;
+        margin-left: 1rem;
+    }
+
+    .difficulty-badge.easy {
+        background: #e6f4ea;
+        color: #0b8043;
+    }
+
+    .difficulty-badge.medium {
+        background: #fff3e0;
+        color: #e65100;
+    }
+
+    .difficulty-badge.hard {
+        background: #ffebee;
+        color: #c62828;
+    }
+
+    .route-distance {
+        margin: 0.5rem 0 1rem;
+        color: #5f6368;
+        font-size: 0.95rem;
+    }
+
+    .btn-favorite {
+        width: 100%;
+        padding: 0.75rem;
+        background: #1a73e8;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    .btn-favorite:hover {
+        background: #1665d8;
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        border-radius: 6px;
+        padding: 1rem 1.5rem;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+
+<!-- Leaflet CSS y JS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inicializar mapa
+        const map = L.map('map').setView([@centerData.Lat, @centerData.Lng], 11);
+
+        // OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Rutas
+        const routes = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(routes));
+
+        const difficultyColors = {
+            'Fácil': '#34a853',
+            'Media': '#fbbc04',
+            'Difícil': '#ea4335'
+        };
+
+        // Marcadores
+        routes.forEach((route) => {
+            const marker = L.circleMarker([route.Lat, route.Lng], {
+                radius: 8,
+                fillColor: difficultyColors[route.Difficulty] || '#4285f4',
+                color: '#fff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.85
+            }).addTo(map);
+
+            marker.bindPopup(`
+                <div style="font-family: Arial; font-size: 13px; min-width: 200px;">
+                    <strong>${route.Name}</strong><br/>
+                    📏 ${route.Distance} km<br/>
+                    📊 ${route.Difficulty}
+                </div>
+            `);
+        });
+
+        // Ubicación del usuario
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+
+                L.circleMarker([lat, lng], {
+                    radius: 7,
+                    fillColor: '#4285f4',
+                    color: '#fff',
+                    weight: 2,
+                    fillOpacity: 0.9
+                }).addTo(map).bindPopup('Tu ubicación');
+
+                map.setView([lat, lng], 13);
+            });
+        }
+    });
+
+    function GetDifficultyClass(difficulty) {
+        if (difficulty === 'Fácil') return 'easy';
+        if (difficulty === 'Media') return 'medium';
+        return 'hard';
+    }
+</script>
+
+@functions {
+    private string GetDifficultyClass(dynamic difficulty)
+    {
+        return (string)difficulty switch
+        {
+            "Fácil" => "easy",
+            "Media" => "medium",
+            "Difícil" => "hard",
+            _ => "easy"
+        };
+    }
+}

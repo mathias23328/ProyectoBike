@@ -1,0 +1,322 @@
+@{
+    ViewData["Title"] = "TempData Demo";
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">TempData</span>
+        <h1>Datos Temporales para Redirecciones</h1>
+        <p class="lead-copy">
+            TempData persiste a través de una redirección HTTP. Se elimina automáticamente después de ser
+            leído. Perfecto para mensajes de éxito/error después de una acción POST.
+        </p>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">⏱️ Enviar Datos Temporales</span>
+        <h2>Guarda y Redirige</h2>
+        
+        <form asp-action="SetTempData" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="tempValue" class="form-label">Mensaje temporal:</label>
+                <input type="text" id="tempValue" name="tempValue" 
+                       class="form-control" placeholder="Ej: Datos guardados exitosamente" required />
+            </div>
+            
+            <button type="submit" class="btn-plan">Guardar y Redirigir</button>
+            <p class="help-text">Se guardará en TempData y se mostrará en la página siguiente</p>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🔄 Patrón Post-Redirect-Get</span>
+        <h2>Usar TempData</h2>
+        
+        <div class="flow-diagram">
+            <div class="flow-step">
+                <strong>1. POST</strong>
+                <span>Usuario envía formulario</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+                <strong>2. Procesar</strong>
+                <span>Guardar en TempData</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+                <strong>3. Redirect</strong>
+                <span>Redirige a GET</span>
+            </div>
+            <div class="flow-arrow">↓</div>
+            <div class="flow-step">
+                <strong>4. GET</strong>
+                <span>Lee TempData y lo elimina</span>
+            </div>
+        </div>
+    </article>
+</section>
+
+<section class="insight-grid mt-4">
+    <article class="insight-card">
+        <span class="card-kicker">📚 Información Técnica</span>
+        <h2>Características de TempData</h2>
+        <ul class="technical-list">
+            <li>Se guarda en sesión (requiere AddSession en Program.cs)</li>
+            <li>Persiste una sola redirección</li>
+            <li>Se elimina automáticamente después de ser leído</li>
+            <li>Usa Keep() para preservar entre dos solicitudes</li>
+            <li>Perfecto para mensajes de error/éxito POST-REDIRECT-GET</li>
+            <li>Previene duplicación de datos en recarga de página (F5)</li>
+        </ul>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">💻 Código de Ejemplo</span>
+        <h2>En el Controlador</h2>
+        <pre><code>// En la acción POST
+[HttpPost]
+public IActionResult Save(string name)
+{
+    // Procesar datos...
+    
+    // Guardar mensaje
+    TempData["Success"] = "Datos guardados!";
+    
+    // Redirigir
+    return RedirectToAction("Index");
+}
+
+// En la acción GET
+[HttpGet]
+public IActionResult Index()
+{
+    // TempData["Success"] está disponible
+    // Se lee y se elimina automáticamente
+    return View();
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🎨 En la Vista</span>
+        <h2>Mostrar TempData</h2>
+        <pre><code>&lt;!-- Si existe TempData["Success"] --&gt;
+@@if (TempData["Success"] != null)
+{
+    &lt;div class="alert alert-success"&gt;
+        @@TempData["Success"]
+    &lt;/div&gt;
+}
+
+&lt;!-- Usar Keep() para preservar --&gt;
+@@if (TempData["Message"] != null)
+{
+    &lt;p&gt;@@TempData["Message"]&lt;/p&gt;
+    TempData.Keep("Message");
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">⚠️ Casos de Uso</span>
+        <h2>Cuándo Usar TempData</h2>
+        <ul class="use-cases">
+            <li>Mensajes de éxito después de POST</li>
+            <li>Mensajes de error tras validación</li>
+            <li>Notificaciones que aparecen una sola vez</li>
+            <li>Alertas que no deben repetirse en recarga (F5)</li>
+        </ul>
+    </article>
+</section>
+
+<style>
+    .stacked-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        padding: 0.5rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-top: 0.5rem;
+    }
+
+    .flow-diagram {
+        background: #f7fafc;
+        padding: 1.5rem;
+        border-radius: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .flow-step {
+        background: white;
+        padding: 1rem;
+        border-radius: 4px;
+        border-left: 3px solid #667eea;
+        width: 100%;
+        text-align: center;
+    }
+
+    .flow-step strong {
+        display: block;
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+    }
+
+    .flow-step span {
+        font-size: 0.875rem;
+        color: #718096;
+    }
+
+    .flow-arrow {
+        color: #667eea;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .technical-list,
+    .use-cases {
+        list-style: none;
+        padding: 0;
+    }
+
+    .technical-list li,
+    .use-cases li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .technical-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #38a169;
+        font-weight: bold;
+    }
+
+    .use-cases li:before {
+        content: "•";
+        position: absolute;
+        left: 0;
+        color: #667eea;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .btn-plan {
+        padding: 0.75rem 1.5rem;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+
+    .mt-4 {
+        margin-top: 2rem;
+    }
+</style>
+        font-size: 1.5rem;
+    }
+
+    .technical-list,
+    .use-cases {
+        list-style: none;
+        padding: 0;
+    }
+
+    .technical-list li,
+    .use-cases li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .technical-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #38a169;
+        font-weight: bold;
+    }
+
+    .use-cases li:before {
+        content: attr(data-icon);
+        position: absolute;
+        left: 0;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .btn-plan {
+        padding: 0.75rem 1.5rem;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+</style>

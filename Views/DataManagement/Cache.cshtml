@@ -1,0 +1,389 @@
+@{
+    ViewData["Title"] = "Redis Cache Demo";
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">Redis Cache</span>
+        <h1>Caché Distribuida de Alto Rendimiento</h1>
+        <p class="lead-copy">
+            Redis es un almacén de datos en memoria que funciona como caché distribuida.
+            Perfecto para datos que se leen mucho y expiran automáticamente.
+        </p>
+    </div>
+</section>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">💾 Estado del Caché</span>
+        <h2>Datos en Caché Actual</h2>
+        
+        <div class="cache-status">
+            <div class="status-item">
+                <strong>Valor actual:</strong>
+                <code>@ViewData["CacheData"]</code>
+            </div>
+            <div class="status-item">
+                <strong>Existe en caché:</strong>
+                <span class="badge @((bool)ViewData["KeyExists"] ? "badge-success" : "badge-danger")">
+                    @((bool)ViewData["KeyExists"] ? "Sí" : "No")
+                </span>
+            </div>
+        </div>
+        
+        <form asp-action="DeleteCache" method="post" class="mt-3">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn-danger">Limpiar Caché</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">➕ Guardar en Caché</span>
+        <h2>Nuevo Valor de Caché</h2>
+        
+        <form asp-action="Cache" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="cacheValue" class="form-label">Valor:</label>
+                <input type="text" id="cacheValue" name="cacheValue" 
+                       class="form-control" placeholder="Ej: datos-importantes" required />
+            </div>
+
+            <div class="form-group">
+                <label for="minutesExpiration" class="form-label">Minutos de expiración:</label>
+                <input type="number" id="minutesExpiration" name="minutesExpiration" 
+                       class="form-control" value="30" min="1" max="1440" />
+            </div>
+            
+            <button type="submit" class="btn-plan">Guardar en Caché</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🔄 Actualizar Caché</span>
+        <h2>PUT - Actualizar Valor</h2>
+        
+        <form asp-action="UpdateCache" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="updateCacheValue" class="form-label">Nuevo valor:</label>
+                <input type="text" id="updateCacheValue" name="cacheValue" 
+                       class="form-control" placeholder="Ej: datos-actualizados" required />
+            </div>
+            
+            <button type="submit" class="btn-plan">Actualizar</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📊 Datos Complejos</span>
+        <h2>Guardar Objetos JSON</h2>
+        
+        <form asp-action="CacheComplexData" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="title" class="form-label">Título:</label>
+                <input type="text" id="title" name="title" 
+                       class="form-control" placeholder="Ej: Proyecto importante" required />
+            </div>
+
+            <div class="form-group">
+                <label for="description" class="form-label">Descripción:</label>
+                <textarea id="description" name="description" 
+                          class="form-control" rows="3" placeholder="Descripción del proyecto" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="priority" class="form-label">Prioridad (1-100):</label>
+                <input type="number" id="priority" name="priority" 
+                       class="form-control" value="5" min="1" max="100" />
+            </div>
+            
+            <button type="submit" class="btn-plan">Guardar Objeto</button>
+        </form>
+    </article>
+</section>
+
+<section class="insight-grid mt-4">
+    <article class="insight-card">
+        <span class="card-kicker">📚 Redis vs Memory Cache</span>
+        <h2>Comparación</h2>
+        <table class="comparison-table">
+            <tr>
+                <th>Característica</th>
+                <th>Memory Cache</th>
+                <th>Redis</th>
+            </tr>
+            <tr>
+                <td>Ubicación</td>
+                <td>Memoria local del servidor</td>
+                <td>Servidor Redis externo</td>
+            </tr>
+            <tr>
+                <td>Distribución</td>
+                <td>Una sola instancia</td>
+                <td>Múltiples servidores</td>
+            </tr>
+            <tr>
+                <td>Persistencia</td>
+                <td>Se pierde al reiniciar</td>
+                <td>Opcional, puede guardarse</td>
+            </tr>
+            <tr>
+                <td>Rendimiento</td>
+                <td>Muy rápido (local)</td>
+                <td>Rápido (pero con latencia de red)</td>
+            </tr>
+            <tr>
+                <td>Desarrollo</td>
+                <td>✅ Funciona sin configuración</td>
+                <td>❌ Requiere servidor Redis</td>
+            </tr>
+            <tr>
+                <td>Producción</td>
+                <td>❌ Solo para una instancia</td>
+                <td>✅ Para múltiples servidores</td>
+            </tr>
+        </table>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">💻 Código de Ejemplo</span>
+        <h2>Uso de IDistributedCache</h2>
+        <pre><code>// Guardar en caché
+var data = JsonSerializer.Serialize(obj);
+var bytes = Encoding.UTF8.GetBytes(data);
+await cache.SetAsync("key", bytes, 
+    new DistributedCacheEntryOptions 
+    { 
+        AbsoluteExpirationRelativeToNow 
+            = TimeSpan.FromMinutes(30) 
+    });
+
+// Obtener del caché
+var cached = await cache.GetAsync("key");
+if (cached != null)
+{
+    var json = Encoding.UTF8.GetString(cached);
+    var obj = JsonSerializer.Deserialize(json);
+}
+
+// Eliminar del caché
+await cache.RemoveAsync("key");</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">⚙️ Configuración en Program.cs</span>
+        <h2>Setup de Redis</h2>
+        <pre><code>// Si Redis está disponible
+var redisConnection = 
+    builder.Configuration
+        .GetConnectionString("Redis");
+
+if (!string.IsNullOrWhiteSpace(redisConnection))
+{
+    builder.Services
+        .AddStackExchangeRedisCache(options =>
+        {
+            options.Configuration = redisConnection;
+            options.InstanceName = "ProyectoBike";
+        });
+}
+else
+{
+    // Fallback a memoria local
+    builder.Services.AddDistributedMemoryCache();
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🔑 Casos de Uso Ideales</span>
+        <h2>Cuándo Usar Caché</h2>
+        <ul class="use-cases">
+            <li>✅ Datos que se leen mucho y cambian poco</li>
+            <li>✅ Resultados de consultas lentas a BD</li>
+            <li>✅ Sesiones de usuario distribuidas</li>
+            <li>✅ Token de autenticación</li>
+            <li>✅ Contadores de visualizaciones</li>
+            <li>✅ Configuración de aplicación</li>
+            <li>❌ Datos que cambian constantemente</li>
+            <li>❌ Datos que no deben perderse</li>
+        </ul>
+    </article>
+</section>
+
+<style>
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+    }
+
+    .alert-success {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left: 4px solid #38a169;
+    }
+
+    .cache-status {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        border-left: 3px solid #667eea;
+    }
+
+    .status-item {
+        margin-bottom: 0.75rem;
+    }
+
+    .status-item strong {
+        display: block;
+        color: #2d3748;
+        margin-bottom: 0.25rem;
+    }
+
+    .status-item code {
+        background: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 2px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        color: #667eea;
+        word-break: break-all;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: #c6f6d5;
+        color: #22543d;
+    }
+
+    .badge-danger {
+        background: #fed7d7;
+        color: #742a2a;
+    }
+
+    .stacked-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control,
+    textarea {
+        padding: 0.5rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-family: inherit;
+    }
+
+    .form-control:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .comparison-table,
+    .use-cases {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+        padding: 0.75rem;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .comparison-table th {
+        background: #edf2f7;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+    .comparison-table tr:hover {
+        background: #f7fafc;
+    }
+
+    .use-cases {
+        list-style: none;
+        padding: 0;
+    }
+
+    .use-cases li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .btn-plan {
+        padding: 0.75rem 1.5rem;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+
+    .btn-danger {
+        padding: 0.5rem 1rem;
+        background: #f56565;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-danger:hover {
+        background: #e53e3e;
+    }
+</style>

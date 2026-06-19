@@ -1,0 +1,223 @@
+@{
+    ViewData["Title"] = "Gestión de Cookies";
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">Cookies</span>
+        <h1>Gestión de Cookies del Navegador</h1>
+        <p class="lead-copy">
+            Las cookies se almacenan en el navegador del cliente. Se envían automáticamente con cada solicitud HTTP
+            y pueden persistir más tiempo que una sesión.
+        </p>
+    </div>
+</section>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">🍪 Cookie Actual</span>
+        <h2>Valor de Cookie</h2>
+        <p>@ViewData["CookieData"]</p>
+        
+        <form asp-action="DeleteCookie" method="post" class="mt-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="cookieName" value="UserCookie" />
+            <button type="submit" class="btn-danger">Eliminar Cookie</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">➕ Guardar Cookie Estándar</span>
+        <h2>Nueva Cookie</h2>
+        
+        <form asp-action="Cookies" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="cookieValue" class="form-label">Valor de cookie:</label>
+                <input type="text" id="cookieValue" name="cookieValue" 
+                       class="form-control" placeholder="Ej: tema-oscuro" required />
+            </div>
+
+            <div class="form-group">
+                <label for="daysExpiration" class="form-label">Días de expiración:</label>
+                <input type="number" id="daysExpiration" name="daysExpiration" 
+                       class="form-control" value="30" min="1" max="365" />
+            </div>
+            
+            <button type="submit" class="btn-plan">Guardar Cookie</button>
+        </form>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🔒 Guardar Cookie Segura</span>
+        <h2>Cookie con HttpOnly + Secure</h2>
+        
+        <form asp-action="SetSecureCookie" method="post" class="stacked-form">
+            @Html.AntiForgeryToken()
+            
+            <div class="form-group">
+                <label for="secureCookieValue" class="form-label">Valor seguro:</label>
+                <input type="text" id="secureCookieValue" name="cookieValue" 
+                       class="form-control" placeholder="Ej: token-auth" required />
+            </div>
+
+            <div class="form-group">
+                <label for="secureDaysExpiration" class="form-label">Días de expiración:</label>
+                <input type="number" id="secureDaysExpiration" name="daysExpiration" 
+                       class="form-control" value="7" min="1" max="365" />
+            </div>
+            
+            <button type="submit" class="btn-plan">Guardar Segura</button>
+        </form>
+    </article>
+</section>
+
+<section class="insight-grid mt-4">
+    <article class="insight-card">
+        <span class="card-kicker">📚 Información Técnica</span>
+        <h2>Tipos de Cookies</h2>
+        <ul class="technical-list">
+            <li><strong>Cookies estándar:</strong> Se ven desde JavaScript, expiración configurable</li>
+            <li><strong>HttpOnly:</strong> No accesible desde JavaScript, más segura para datos sensibles</li>
+            <li><strong>Secure:</strong> Solo se envía en HTTPS, protege contra man-in-the-middle</li>
+            <li><strong>SameSite:</strong> Protege contra CSRF (Strict, Lax, None)</li>
+            <li><strong>Persistentes:</strong> Se guardan incluso después de cerrar el navegador</li>
+        </ul>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">💻 Código de Ejemplo</span>
+        <h2>Implementación</h2>
+        <pre><code>// Guardar cookie estándar
+Response.Cookies.Append("key", "value", 
+    new CookieOptions { 
+        Expires = DateTimeOffset.UtcNow.AddDays(30) 
+    });
+
+// Guardar cookie segura
+Response.Cookies.Append("secure", "value",
+    new CookieOptions {
+        HttpOnly = true,
+        Secure = true,
+        SameSite = SameSiteMode.Strict
+    });
+
+// Obtener cookie
+Request.Cookies.TryGetValue("key", out var value);
+
+// Eliminar cookie
+Response.Cookies.Delete("key");</code></pre>
+    </article>
+</section>
+
+<style>
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+    }
+
+    .alert-success {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left: 4px solid #38a169;
+    }
+
+    .btn-danger {
+        padding: 0.5rem 1rem;
+        background: #f56565;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-danger:hover {
+        background: #e53e3e;
+    }
+
+    .stacked-form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        padding: 0.5rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .technical-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .technical-list li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .technical-list li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #38a169;
+        font-weight: bold;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .btn-plan {
+        padding: 0.75rem 1.5rem;
+        background: #667eea;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+</style>

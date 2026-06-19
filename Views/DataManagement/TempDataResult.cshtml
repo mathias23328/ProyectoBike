@@ -1,0 +1,206 @@
+@{
+    ViewData["Title"] = "Resultado TempData";
+}
+
+@if (TempData["UserMessage"] != null)
+{
+    <div class="alert alert-success">
+        <h3>✅ TempData Recuperado</h3>
+        <p><strong>Mensaje:</strong> @TempData["UserMessage"]</p>
+        <p><strong>Timestamp:</strong> @TempData["Timestamp"]</p>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <h3>ℹ️ Sin TempData</h3>
+        <p>No hay datos en TempData. Usa el formulario de TempData para enviar datos.</p>
+    </div>
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">TempData</span>
+        <h1>Datos Temporales Recuperados</h1>
+        <p class="lead-copy">
+            Este es el resultado de la redirección. Los datos guardados en TempData
+            persisten automáticamente a través de una redirección HTTP.
+        </p>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card">
+        <span class="card-kicker">🔄 Lo Que Pasó</span>
+        <h2>Flujo Automático</h2>
+        
+        <ol class="flow-list">
+            <li>Enviaste un formulario con POST</li>
+            <li>El controlador guardó datos en TempData</li>
+            <li>Se ejecutó un RedirectToAction (HTTP 302)</li>
+            <li>El navegador hizo una nueva solicitud GET</li>
+            <li>Los datos de TempData estaban disponibles</li>
+            <li>Después de leerlos, se eliminan automáticamente</li>
+        </ol>
+
+        <div class="important-note">
+            <strong>Importante:</strong> Si recargas esta página (F5),
+            TempData ya no estará disponible porque se elimina
+            después de la primera lectura.
+        </div>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">💻 Comportamiento</span>
+        <h2>TempData.Keep()</h2>
+        
+        <p>Puedes preservar TempData para una siguiente redirección:</p>
+        
+        <pre><code>@@if (TempData["Message"] != null)
+{
+    &lt;p&gt;@@TempData["Message"]&lt;/p&gt;
+    TempData.Keep("Message");
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🎯 Casos de Uso</span>
+        <h2>Cuándo Usar TempData</h2>
+        
+        <ul class="use-cases">
+            <li>✅ Mensajes de éxito después de POST</li>
+            <li>✅ Mensajes de error tras validación</li>
+            <li>✅ Confirmaciones de operaciones</li>
+            <li>✅ Alertas que aparecen una sola vez</li>
+            <li>✅ Datos para redireccionamientos</li>
+        </ul>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">↩️ Volver</span>
+        <h2>Prueba Nuevamente</h2>
+        
+        <a href="@Url.Action("TempDataDemo", "DataManagement")" class="btn-plan">
+            Enviar otro TempData
+        </a>
+        
+        <a href="@Url.Action("Index", "DataManagement")" class="btn-secondary">
+            Ir al inicio
+        </a>
+    </article>
+</section>
+
+<style>
+    .alert {
+        padding: 1.5rem;
+        border-radius: 4px;
+        margin-bottom: 2rem;
+        border-left: 4px solid;
+    }
+
+    .alert-success {
+        background: #c6f6d5;
+        color: #22543d;
+        border-left-color: #38a169;
+    }
+
+    .alert-info {
+        background: #bee3f8;
+        color: #2c5282;
+        border-left-color: #3182ce;
+    }
+
+    .alert h3 {
+        margin: 0 0 0.5rem;
+    }
+
+    .alert p {
+        margin: 0.25rem 0;
+    }
+
+    .flow-list {
+        list-style: decimal;
+        padding-left: 2rem;
+        color: #718096;
+    }
+
+    .flow-list li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+
+    .important-note {
+        background: #fef5e7;
+        border-left: 3px solid #f39c12;
+        padding: 1rem;
+        border-radius: 4px;
+        margin-top: 1rem;
+        color: #7d6608;
+    }
+
+    .important-note strong {
+        color: #7d6608;
+    }
+
+    .use-cases {
+        list-style: none;
+        padding: 0;
+    }
+
+    .use-cases li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    .use-cases li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #38a169;
+        font-weight: bold;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .btn-plan,
+    .btn-secondary {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        text-decoration: none;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        margin-right: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .btn-plan {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+
+    .btn-secondary {
+        background: #cbd5e0;
+        color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+        background: #a0aec0;
+    }
+</style>

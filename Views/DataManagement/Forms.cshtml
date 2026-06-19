@@ -1,0 +1,351 @@
+@{
+    ViewData["Title"] = "Formularios y Validación";
+}
+
+<section class="hero-shell">
+    <div class="hero-copy">
+        <span class="eyebrow">Forms & Validation</span>
+        <h1>Procesamiento de Formularios</h1>
+        <p class="lead-copy">
+            Los formularios permiten al usuario enviar datos al servidor. Incluyen validación en cliente
+            (HTML5, JavaScript) y en servidor (ModelState, atributos [Required], etc.)
+        </p>
+    </div>
+</section>
+
+<section class="insight-grid">
+    <article class="insight-card full-width">
+        <span class="card-kicker">📝 Formulario Completo</span>
+        <h2>Validación y Almacenamiento Múltiple</h2>
+        
+        <form asp-action="Forms" method="post" class="form-container">
+            @Html.AntiForgeryToken()
+            
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    <strong>Errores de validación:</strong>
+                    <ul>
+                        @foreach (var modelState in ViewData.ModelState.Values)
+                        {
+                            foreach (var error in modelState.Errors)
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        }
+                    </ul>
+                </div>
+            }
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name" class="form-label">Nombre *</label>
+                    <input type="text" id="name" name="Name" 
+                           class="form-control" 
+                           placeholder="Tu nombre completo" required minlength="3" maxlength="100" />
+                    <span class="form-hint">Mínimo 3 caracteres, máximo 100</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email *</label>
+                    <input type="email" id="email" name="Email" 
+                           class="form-control" 
+                           placeholder="tu@email.com" required />
+                    <span class="form-hint">Debe ser un email válido</span>
+                </div>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="message" class="form-label">Mensaje</label>
+                <textarea id="message" name="Message" 
+                          class="form-control" rows="4"
+                          placeholder="Tu mensaje aquí..." maxlength="500"></textarea>
+                <span class="form-hint">Máximo 500 caracteres</span>
+            </div>
+
+            <div class="form-group full-width">
+                <label for="rating" class="form-label">Calificación (1-10)</label>
+                <input type="number" id="rating" name="Rating" 
+                       class="form-control" min="1" max="10" />
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-plan">Enviar Formulario</button>
+                <button type="reset" class="btn-secondary">Limpiar</button>
+            </div>
+        </form>
+
+        <p class="form-note">
+            <strong>Nota:</strong> Este formulario se guarda en:<br/>
+            • <strong>Session:</strong> Nombre del usuario<br/>
+            • <strong>Cookie:</strong> Email del usuario<br/>
+            • <strong>Redis Cache:</strong> Objeto completo con timestamp
+        </p>
+    </article>
+</section>
+
+<section class="insight-grid mt-4">
+    <article class="insight-card">
+        <span class="card-kicker">✅ Validación en Servidor</span>
+        <h2>Atributos de Modelo</h2>
+        <pre><code>public class FormDataModel
+{
+    [Required(ErrorMessage = 
+        "El nombre es requerido")]
+    [StringLength(100, 
+        MinimumLength = 3)]
+    public string Name { get; set; }
+
+    [Required]
+    [EmailAddress(ErrorMessage = 
+        "Email inválido")]
+    public string Email { get; set; }
+
+    [StringLength(500)]
+    public string Message { get; set; }
+
+    [Range(1, 10)]
+    public int? Rating { get; set; }
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📋 Validación en Cliente</span>
+        <h2>HTML5 + Atributos</h2>
+        <pre><code>&lt;!-- required: Campo obligatorio --&gt;
+&lt;input type="text" required /&gt;
+
+&lt;!-- email: Valida formato email --&gt;
+&lt;input type="email" /&gt;
+
+&lt;!-- minlength/maxlength --&gt;
+&lt;input type="text" minlength="3" 
+       maxlength="100" /&gt;
+
+&lt;!-- min/max: Rango numérico --&gt;
+&lt;input type="number" min="1" max="10" /&gt;
+
+&lt;!-- pattern: Expresión regular --&gt;
+&lt;input type="text" 
+       pattern="[A-Z][a-z]+" /&gt;</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🛡️ CSRF Protection</span>
+        <h2>Token Anti-Forgery</h2>
+        <pre><code>&lt;!-- En la vista --&gt;
+@Html.AntiForgeryToken()
+
+&lt;!-- O con Razor Pages --&gt;
+&lt;input name="__RequestVerificationToken" 
+       type="hidden" value="..." /&gt;
+
+&lt;!-- En el controlador --&gt;
+[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Submit(Model model)
+{
+    // Token automáticamente validado
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">📝 Mostrar Errores</span>
+        <h2>En la Vista</h2>
+        <pre><code>&lt;!-- Resumen de errores --&gt;
+&lt;div asp-validation-summary="All"&gt;&lt;/div&gt;
+
+&lt;!-- Errores por campo --&gt;
+&lt;input asp-for="Name" /&gt;
+&lt;span asp-validation-for="Name"&gt;&lt;/span&gt;
+
+&lt;!-- En controlador --&gt;
+if (!ModelState.IsValid)
+{
+    return View(model);
+}</code></pre>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🎯 Buenas Prácticas</span>
+        <h2>Validación</h2>
+        <ul class="practices-list">
+            <li>✅ Validar siempre en servidor</li>
+            <li>✅ Usar atributos [Required], [Email], etc.</li>
+            <li>✅ Mostrar mensajes de error claros</li>
+            <li>✅ Usar [ValidateAntiForgeryToken]</li>
+            <li>✅ Usar input correcto (email, number, etc.)</li>
+            <li>✅ Sanitizar entrada del usuario</li>
+            <li>❌ Confiar solo en validación cliente</li>
+            <li>❌ Exponer información sensible en errores</li>
+        </ul>
+    </article>
+
+    <article class="insight-card">
+        <span class="card-kicker">🔄 Flujo de Procesamiento</span>
+        <h2>POST → Validar → Procesar</h2>
+        <pre><code>[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Submit(FormModel model)
+{
+    // 1. Validación automática (ModelState)
+    if (!ModelState.IsValid)
+    {
+        return View(model); // Mostrar errores
+    }
+
+    // 2. Procesar datos válidos
+    ProcessData(model);
+
+    // 3. Guardar en múltiples lugares
+    session.SetString("key", value);
+    cache.Set("key", value);
+
+    // 4. Redirigir (POST-Redirect-GET)
+    TempData["Success"] = "Guardado!";
+    return RedirectToAction("Success");
+}</code></pre>
+    </article>
+</section>
+
+<style>
+    .form-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .alert {
+        padding: 1rem;
+        border-radius: 4px;
+        margin-bottom: 1.5rem;
+    }
+
+    .alert-danger {
+        background: #fed7d7;
+        color: #742a2a;
+        border-left: 4px solid #f56565;
+    }
+
+    .alert-danger ul {
+        margin: 0.5rem 0 0;
+        padding-left: 1.5rem;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-group.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control,
+    textarea {
+        padding: 0.75rem;
+        border: 1px solid #cbd5e0;
+        border-radius: 4px;
+        font-size: 1rem;
+        font-family: inherit;
+    }
+
+    .form-control:focus,
+    textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-hint {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-top: 0.25rem;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-plan,
+    .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-plan {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-plan:hover {
+        background: #764ba2;
+    }
+
+    .btn-secondary {
+        background: #e2e8f0;
+        color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+        background: #cbd5e0;
+    }
+
+    .form-note {
+        background: #edf2f7;
+        border-left: 3px solid #667eea;
+        padding: 1rem;
+        margin-top: 1.5rem;
+        font-size: 0.95rem;
+        color: #2d3748;
+        line-height: 1.6;
+    }
+
+    pre {
+        background: #f7fafc;
+        padding: 1rem;
+        border-radius: 4px;
+        overflow-x: auto;
+    }
+
+    code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.875rem;
+    }
+
+    .practices-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .practices-list li {
+        padding: 0.5rem 0;
+        color: #718096;
+        padding-left: 1.5rem;
+        position: relative;
+    }
+
+    @@media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
